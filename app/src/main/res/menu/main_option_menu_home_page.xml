@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_home_login"
+        android:icon="@drawable/ic_login"
+        android:title="Đăng nhập"
+        app:showAsAction="always|withText" />
+    <item
+        android:id="@+id/menu_home_manager"
+        android:icon="@drawable/ic_manager"
+        android:title="Quản lý"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_home_profile"
+        android:icon="@drawable/ic_profile"
+        android:title="Tài khoản"
+        app:showAsAction="never|withText" />
+</menu>

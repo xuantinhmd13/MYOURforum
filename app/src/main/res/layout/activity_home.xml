@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".homepage.HomeActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/green"
+        android:theme="@style/Theme.MYOURforum"
+        app:popupTheme="@style/PopupStyle"></androidx.appcompat.widget.Toolbar>
+
+    <FrameLayout
+        android:id="@+id/frame_layout_fullscreen_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/edit_text_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/rounded_border_edittext"
+                    android:hint="Tìm kiếm ..."
+                    android:padding="5dp"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/image_view_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginEnd="4dp"
+                    android:src="@drawable/ic_search_black_36dp" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gray_1"
+                android:orientation="horizontal"
+                android:paddingStart="4dp"
+                android:paddingTop="3dp"
+                android:paddingEnd="4dp"
+                android:paddingBottom="3dp">
+
+                <TextView
+                    android:id="@+id/text_view_category"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Danh mục: "
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <org.angmarch.views.NiceSpinner
+                    android:id="@+id/spinner_category"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="3"
+                    android:textAlignment="center"
+                    android:textSize="15sp"
+                    app:popupTextAlignment="center"></org.angmarch.views.NiceSpinner>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/text_view_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Không tìm thấy !"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:visibility="gone" />
+
+                <com.jcodecraeer.xrecyclerview.XRecyclerView
+                    android:id="@+id/recycler_view_home_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></com.jcodecraeer.xrecyclerview.XRecyclerView>
+
+                <com.getbase.floatingactionbutton.FloatingActionsMenu
+                    android:id="@+id/floating_action_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="13dp"
+                    app:fab_addButtonColorNormal="@color/green"
+                    app:fab_addButtonColorPressed="@color/blue_2"
+                    app:fab_addButtonPlusIconColor="@color/white"
+                    app:fab_labelStyle="@style/fab_menu">
+
+                    <com.getbase.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fab_your_post"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:fab_colorNormal="@color/white"
+                        app:fab_colorPressed="@color/gray_1"
+                        app:fab_icon="@drawable/ic_your_post"
+                        app:fab_size="mini"
+                        app:fab_title="Bài của bạn" />
+
+                    <com.getbase.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fab_create_post"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:fab_colorNormal="@color/white"
+                        app:fab_colorPressed="@color/gray_1"
+                        app:fab_icon="@drawable/ic_create"
+                        app:fab_size="mini"
+                        app:fab_title="Viết bài" />
+
+                    <com.getbase.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/fab_up_top"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:fab_colorNormal="@color/white"
+                        app:fab_colorPressed="@color/gray_1"
+                        app:fab_icon="@drawable/ic_up_top"
+                        app:fab_size="mini"
+                        app:fab_title="Về đầu trang" />
+
+                </com.getbase.floatingactionbutton.FloatingActionsMenu>
+            </RelativeLayout>
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>
