@@ -103,7 +103,7 @@
             android:layout_height="15dp"
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
-            android:src="@drawable/ic_view_count" />
+            android:src="@drawable/icon_view_count" />
 
         <TextView
             android:id="@+id/text_view_view_count"

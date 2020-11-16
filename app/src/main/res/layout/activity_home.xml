@@ -11,7 +11,7 @@
         android:id="@+id/tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/green"
+        android:background="@color/green_1"
         android:theme="@style/Theme.MYOURforum"
         app:popupTheme="@style/PopupStyle"></androidx.appcompat.widget.Toolbar>
 
@@ -105,14 +105,14 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></com.jcodecraeer.xrecyclerview.XRecyclerView>
 
                 <com.getbase.floatingactionbutton.FloatingActionsMenu
-                    android:id="@+id/floating_action_menu"
+                    android:id="@+id/fab_menu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
                     android:layout_margin="13dp"
-                    app:fab_addButtonColorNormal="@color/green"
-                    app:fab_addButtonColorPressed="@color/blue_2"
+                    app:fab_addButtonColorNormal="@color/green_1"
+                    app:fab_addButtonColorPressed="@color/green"
                     app:fab_addButtonPlusIconColor="@color/white"
                     app:fab_labelStyle="@style/fab_menu">
 
@@ -122,7 +122,7 @@
                         android:layout_height="wrap_content"
                         app:fab_colorNormal="@color/white"
                         app:fab_colorPressed="@color/gray_1"
-                        app:fab_icon="@drawable/ic_your_post"
+                        app:fab_icon="@drawable/icon_your_post"
                         app:fab_size="mini"
                         app:fab_title="Bài của bạn" />
 
@@ -142,7 +142,7 @@
                         android:layout_height="wrap_content"
                         app:fab_colorNormal="@color/white"
                         app:fab_colorPressed="@color/gray_1"
-                        app:fab_icon="@drawable/ic_up_top"
+                        app:fab_icon="@drawable/icon_up_top"
                         app:fab_size="mini"
                         app:fab_title="Về đầu trang" />
 

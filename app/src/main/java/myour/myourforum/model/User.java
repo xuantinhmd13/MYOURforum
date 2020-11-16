@@ -12,12 +12,11 @@ public class User {
     private String createTime;
     private String updateTime;
     private boolean adminRole;
-    private String avatarUrl;
 
     public User() {
     }
 
-    public User(int id, String userName, String passWord, String phoneNumber, String email, String description, String createTime, String updateTime, boolean adminRole, String avatarUrl) {
+    public User(int id, String userName, String passWord, String phoneNumber, String email, String description, String createTime, String updateTime, boolean adminRole) {
         this.id = id;
         this.userName = userName;
         this.passWord = passWord;
@@ -27,7 +26,6 @@ public class User {
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.adminRole = adminRole;
-        this.avatarUrl = avatarUrl;
     }
 
     public int getId() {
@@ -100,13 +98,5 @@ public class User {
 
     public void setAdminRole(boolean adminRole) {
         this.adminRole = adminRole;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
     }
 }

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,10 +25,12 @@ import java.util.List;
 
 import myour.myourforum.Program;
 import myour.myourforum.R;
+import myour.myourforum.admin.AdminActivity;
 import myour.myourforum.databinding.ActivityHomeBinding;
-import myour.myourforum.login.LoginActivity;
+import myour.myourforum.loginandregister.LoginActivity;
 import myour.myourforum.model.Category;
 import myour.myourforum.model.Post;
+import myour.myourforum.profile.ProfileActivity;
 import myour.myourforum.util.LoadingScreen;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -65,6 +68,27 @@ public class HomeActivity extends AppCompatActivity {
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
                 categoryId = position;
                 loadDataFromServer();
+            }
+        });
+
+        binding.fabUpTop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.recyclerViewHomePage.smoothScrollToPosition(1);
+            }
+        });
+
+        binding.fabCreatePost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO:
+            }
+        });
+
+        binding.fabYourPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO:
             }
         });
     }
@@ -110,26 +134,27 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 LoadingScreen.hide();
-                if (response.code() == 204) {
-                    binding.textViewEmpty.setVisibility(View.VISIBLE);
-                    binding.recyclerViewHomePage.setVisibility(View.GONE);
-                    Log.d(TAG, "NO POST");
-                }
                 if (response.code() == 200) {
                     postList = response.body();
-                    binding.textViewEmpty.setVisibility(View.GONE);
-                    binding.recyclerViewHomePage.setVisibility(View.VISIBLE);
-                }
-                if (!isLoaded) {
-                    homeAdapter = new HomeAdapter(postList, HomeActivity.this);
-                    binding.recyclerViewHomePage.setAdapter(homeAdapter);
-                    binding.recyclerViewHomePage.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
-                    binding.recyclerViewHomePage.setPullRefreshEnabled(false);
-                    isLoaded = true;
-                } else {
-                    homeAdapter.update(postList);
-                    binding.recyclerViewHomePage.setLoadingMoreEnabled(true);
-                }
+                    if (postList.size() == 0) {
+                        binding.textViewEmpty.setVisibility(View.VISIBLE);
+                        binding.recyclerViewHomePage.setVisibility(View.GONE);
+                    } else {
+                        binding.textViewEmpty.setVisibility(View.GONE);
+                        binding.recyclerViewHomePage.setVisibility(View.VISIBLE);
+                    }
+                    if (!isLoaded) {
+                        homeAdapter = new HomeAdapter(postList, HomeActivity.this);
+                        binding.recyclerViewHomePage.setAdapter(homeAdapter);
+                        binding.recyclerViewHomePage.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
+                        binding.recyclerViewHomePage.setPullRefreshEnabled(false);
+                        isLoaded = true;
+                    } else {
+                        homeAdapter.update(postList);
+                        binding.recyclerViewHomePage.setLoadingMoreEnabled(true);
+                    }
+                } else
+                    Toast.makeText(HomeActivity.this, Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -150,100 +175,43 @@ public class HomeActivity extends AppCompatActivity {
         }
         getMenuInflater().inflate(R.menu.main_option_menu_home_page, menu);
         optionMenu = menu;
-        //controlActivity(optionMenu);
+        controlActivity(optionMenu);
         return super.onPrepareOptionsMenu(menu);
     }
 
-//    private void controlActivity(Menu optionMenu) {
-//        if (Program.user != null) {
-//            //hide login.
-//            optionMenu.findItem(R.id.menu_home_login).setVisible(false);
-//            //open features.
-//            optionMenu.findItem(R.id.menu_home_your_post).setVisible(true);
-//            optionMenu.findItem(R.id.menu_home_profile).setVisible(true);
-//            optionMenu.findItem(R.id.menu_home_logout).setVisible(true);
-//            if (Program.user.isAdminRole())
-//                optionMenu.findItem(R.id.menu_home_manager).setVisible(true);
-//            else optionMenu.findItem(R.id.menu_home_manager).setVisible(false);
-//        } else {
-//            //show login.
-//            optionMenu.findItem(R.id.menu_home_login).setVisible(true);
-//            //hide features.
-//            optionMenu.findItem(R.id.menu_home_your_post).setVisible(false);
-//            optionMenu.findItem(R.id.menu_home_manager).setVisible(false);
-//            optionMenu.findItem(R.id.menu_home_profile).setVisible(false);
-//            optionMenu.findItem(R.id.menu_home_logout).setVisible(false);
-//        }
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.menu_home_login:
-//                startActivity(new Intent(this, LoginActivity.class));
-//                break;
-//            case R.id.menu_home_manager:
-//                if (Program.user.isAdminRole()) {
-//                    startActivity(new Intent(this, AdminMainActivity.class));
-//                } else {
-//                    startActivity(new Intent(this, MainActivity.class));
-//                }
-//                break;
-//            case R.id.menuHomeManage:
-//                if (Program.user.isAdminRole()) {
-//                    startActivity(new Intent(this, AdminMainActivity.class));
-//                } else {
-//                    startActivity(new Intent(this, MainActivity.class));
-//                }
-//                break;
-//
-//            case R.id.menuHomeUserProfile:
-//                isHomePageActivity = true;
-//                if (fragmentManagerHomePage.findFragmentByTag("profileFrag") == null) {
-//                    fragmentManagerHomePage.beginTransaction().add(R.id.fullscreenFragmentContainerHomePage, new ProfileFragment(), "profileFrag").commit();
-//                }
-//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//                break;
-//            case R.id.menuHomeLogout:
-//
-//                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-//                alertDialog.setTitle("Confirm!");
-//                alertDialog.setIcon(R.mipmap.ic_launcher);
-//                alertDialog.setMessage("Do you really want to logout?");
-//                alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        ProgressDialogF.showLoading(alertDialog.getContext());
-//                        apiService.logout(Program.user.getId()).enqueue(new Callback<String>() {
-//                            @Override
-//                            public void onResponse(Call<String> call, Response<String> response) {
-//                                ProgressDialogF.hideLoading();
-//                                if (response.body().equals("success")) {
-//                                    Program.user = null;
-//                                    onResume();
-//                                } else {
-//                                    Toast.makeText(HomeActivity.this, "Logout failed! An error has occurred!", Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onFailure(Call<String> call, Throwable t) {
-//                                ProgressDialogF.hideLoading();
-//                                Toast.makeText(HomeActivity.this, "Logout failed! An error has occurred!", Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//                    }
-//                });
-//                alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                });
-//                alertDialog.show();
-//
-//                break;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+    private void controlActivity(Menu optionMenu) {
+        if (Program.user != null) {
+            //hide login.
+            optionMenu.findItem(R.id.menu_home_login).setVisible(false);
+            //open features.
+            optionMenu.findItem(R.id.menu_home_profile).setVisible(true);
+            if (Program.user.isAdminRole())
+                optionMenu.findItem(R.id.menu_home_manager).setVisible(true);
+            else optionMenu.findItem(R.id.menu_home_manager).setVisible(false);
+        } else {
+            //show login.
+            optionMenu.findItem(R.id.menu_home_login).setVisible(true);
+            //hide features.
+            optionMenu.findItem(R.id.menu_home_manager).setVisible(false);
+            optionMenu.findItem(R.id.menu_home_profile).setVisible(false);
+        }
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_home_login:
+                startActivity(new Intent(this, LoginActivity.class));
+                break;
+            case R.id.menu_home_manager:
+                if (Program.user.isAdminRole())
+                    startActivity(new Intent(this, AdminActivity.class));
+                break;
+            case R.id.menu_home_profile:
+                startActivity(new Intent(this, ProfileActivity.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

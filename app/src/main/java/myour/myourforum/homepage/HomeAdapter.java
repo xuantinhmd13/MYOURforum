@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -74,7 +75,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             Program.request.getUserNameByUserId(post.getUserId()).enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
-                    binding.textViewUsername.setText(response.body());
+                    if (response.code() == 200) {
+                        binding.textViewUsername.setText(response.body());
+                    } else
+                        Toast.makeText(context, Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

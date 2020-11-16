@@ -15,6 +15,7 @@ import myour.myourforum.model.Category;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.HTTP;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -52,10 +53,13 @@ public class SplashScreenActivity extends AppCompatActivity {
         Program.request.getAllCategory().enqueue(new Callback<List<Category>>() {
             @Override
             public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
-                Program.categoryList = new ArrayList<>();
-                Program.categoryList = response.body();
-                startActivity(new Intent(SplashScreenActivity.this, HomeActivity.class));
-                finish();
+                if (response.code() == 200) {
+                    Program.categoryList = new ArrayList<>();
+                    Program.categoryList = response.body();
+                    startActivity(new Intent(SplashScreenActivity.this, HomeActivity.class));
+                    finish();
+                } else
+                    Toast.makeText(SplashScreenActivity.this, Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
             }
 
             @Override

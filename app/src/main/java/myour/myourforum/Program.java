@@ -29,6 +29,9 @@ public class Program {
     public static RESTfulAPIRequest request = RESTfulAPIConfig.getServer();
 
     public static String ERR_API_FAILURE = "Lỗi kết nối máy chủ!";
+    public static String ERR_API_SERVER = "Lỗi máy chủ!";
+
+    public static int REQUEST_CODE_LOGIN = 2;
 
     public static String getDateTimeNow() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
