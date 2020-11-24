@@ -1,11 +1,8 @@
 package myour.myourforum.homepage;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,7 +41,7 @@ public class HomeActivity extends AppCompatActivity {
     private List<Post> postList;
     private Menu optionMenu;
 
-    private boolean isToasted = false;
+    private boolean isPressedBack = false;
     private boolean isLoaded = false;
     private int categoryId = 0;
     private int pageIndexMain = 0;
@@ -125,6 +122,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void searchPost(String keyWord) {
+        //TODO:
     }
 
     private void getPostByCategory() {
@@ -134,25 +132,9 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 LoadingScreen.hide();
-                if (response.code() == 200) {
+                if (response.code() == 200 && response.body() != null) {
                     postList = response.body();
-                    if (postList.size() == 0) {
-                        binding.textViewEmpty.setVisibility(View.VISIBLE);
-                        binding.recyclerViewHomePage.setVisibility(View.GONE);
-                    } else {
-                        binding.textViewEmpty.setVisibility(View.GONE);
-                        binding.recyclerViewHomePage.setVisibility(View.VISIBLE);
-                    }
-                    if (!isLoaded) {
-                        homeAdapter = new HomeAdapter(postList, HomeActivity.this);
-                        binding.recyclerViewHomePage.setAdapter(homeAdapter);
-                        binding.recyclerViewHomePage.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
-                        binding.recyclerViewHomePage.setPullRefreshEnabled(false);
-                        isLoaded = true;
-                    } else {
-                        homeAdapter.update(postList);
-                        binding.recyclerViewHomePage.setLoadingMoreEnabled(true);
-                    }
+                    setUpRecyclerView(postList);
                 } else
                     Toast.makeText(HomeActivity.this, Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
             }
@@ -164,6 +146,26 @@ public class HomeActivity extends AppCompatActivity {
                 Log.d(TAG, "ERR_API " + t.toString());
             }
         });
+    }
+
+    private void setUpRecyclerView(List<Post> list) {
+        if (list.size() == 0) {
+            binding.textViewEmpty.setVisibility(View.VISIBLE);
+            binding.recyclerViewHomePage.setVisibility(View.GONE);
+        } else {
+            binding.textViewEmpty.setVisibility(View.GONE);
+            binding.recyclerViewHomePage.setVisibility(View.VISIBLE);
+        }
+        if (!isLoaded) {
+            homeAdapter = new HomeAdapter(list, HomeActivity.this);
+            binding.recyclerViewHomePage.setAdapter(homeAdapter);
+            binding.recyclerViewHomePage.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
+            binding.recyclerViewHomePage.setPullRefreshEnabled(false);
+            isLoaded = true;
+        } else {
+            homeAdapter.update(list);
+            binding.recyclerViewHomePage.setLoadingMoreEnabled(true);
+        }
     }
 
     @SuppressLint("RestrictedApi")
@@ -213,5 +215,38 @@ public class HomeActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (optionMenu != null) {
+            controlActivity(optionMenu);
+        }
+        getCategoryListName();
+        loadDataFromServer();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //TODO: check destroy xrecyvlerview.
+        if (binding.recyclerViewHomePage != null) {
+            binding.recyclerViewHomePage.destroy();
+        }
+        isPressedBack = false;
+        Program.user = null;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!isPressedBack) {
+            Toast.makeText(this, "Nhấn lần nữa để thoát!", Toast.LENGTH_SHORT).show();
+            isPressedBack = true;
+        } else {
+            isPressedBack = false;
+            super.onBackPressed();
+            finishAffinity();
+        }
     }
 }

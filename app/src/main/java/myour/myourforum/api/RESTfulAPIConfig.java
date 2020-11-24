@@ -10,7 +10,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RESTfulAPIConfig {
-    public static final String URL = "http://192.168.1.7:8083";
+    public static final String URL = "http://192.168.1.4:8083";
 
     private static Retrofit retrofit = null;
 

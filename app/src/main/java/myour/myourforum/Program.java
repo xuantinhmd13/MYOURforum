@@ -27,11 +27,11 @@ public class Program {
     public static List<Category> categoryList;
     //
     public static RESTfulAPIRequest request = RESTfulAPIConfig.getServer();
-
-    public static String ERR_API_FAILURE = "Lỗi kết nối máy chủ!";
-    public static String ERR_API_SERVER = "Lỗi máy chủ!";
-
-    public static int REQUEST_CODE_LOGIN = 2;
+    //
+    public static final int REQUEST_CODE_LOGIN = 2;
+    public static final int BCRYPT_LOG_ROUND = 13;
+    public static final String ERR_API_FAILURE = "Lỗi kết nối máy chủ!";
+    public static final String ERR_API_SERVER = "Lỗi máy chủ!";
 
     public static String getDateTimeNow() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

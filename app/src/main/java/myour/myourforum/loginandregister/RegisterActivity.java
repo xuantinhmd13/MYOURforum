@@ -3,11 +3,14 @@ package myour.myourforum.loginandregister;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
+
+import org.mindrot.jbcrypt.BCrypt;
 
 import myour.myourforum.Program;
 import myour.myourforum.databinding.ActivityRegisterBinding;
@@ -21,9 +24,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     private ActivityRegisterBinding binding;
 
-    private String email;
-    private String password;
-    private String userName;
+    private String emailRegister;
+    private String passwordRegister;
+    private String usernameRegister;
+    private String TAG = "#RegisterActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
         binding.imageViewBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RegisterActivity.this.finish();
+                clickImageViewBack();
             }
         });
 
@@ -68,73 +72,102 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    private void clickImageViewBack() {
+        finish();
+    }
+
     private void clickButtonRegister() {
+        getDataFromEditText();
         if (isValidInputData()) {
-            User newUser = new User();
-            newUser.setEmail(email);
-            newUser.setUserName(userName);
-            newUser.setPassWord(encrypt(password));
-            newUser.setCreateTime(Program.getDateTimeNow());
-
-            LoadingScreen.show(this);
-            Program.request.registerUser(newUser).enqueue(new Callback<String>() {
-                @Override
-                public void onResponse(Call<String> call, Response<String> response) {
-                    LoadingScreen.hide();
-                    if (response.code() == 200) {
-                        if (response.body().equals("email")) {
-                            binding.editTextEmail.setError("Email này đã tồn tại!");
-                            binding.editTextEmail.requestFocus();
-                            //TODO:
-                            return;
-                        }
-                        if (response.body().equals("username")) {
-                            binding.editTextUserName.setError("Tên này đã được sử dụng!");
-                            binding.editTextUserName.requestFocus();
-                            return;
-                        }
-                        if (response.body().equals("OK")) {
-                            Toast.makeText(RegisterActivity.this, "Đăng kí thành công!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent();
-                            intent.putExtra("#email", newUser.getEmail());
-                            setResult(RESULT_OK, intent);
-                            finish();
-                        }
-                    } else
-                        Toast.makeText(RegisterActivity.this, Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onFailure(Call<String> call, Throwable t) {
-                    LoadingScreen.hide();
-                    Toast.makeText(RegisterActivity.this, Program.ERR_API_FAILURE, Toast.LENGTH_SHORT).show();
-                }
-            });
+            User userRegister = new User();
+            registerAsyncTask(userRegister);
         }
     }
 
-    private String encrypt(String password) {
-        //TODO:
-        return password;
+    private void registerAsyncTask(User userRegister) {
+        new AsyncTask<String, Void, String>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                LoadingScreen.show(RegisterActivity.this);
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                return BCrypt.hashpw(strings[0], BCrypt.gensalt(Program.BCRYPT_LOG_ROUND));
+            }
+
+            @Override
+            protected void onPostExecute(String passwordEncrypted) {
+                super.onPostExecute(passwordEncrypted);
+                LoadingScreen.hide();
+                register(userRegister, passwordEncrypted);
+            }
+        }.execute(passwordRegister);
+    }
+
+    private void register(User userRegister, String passwordEncrypted) {
+        userRegister.setEmail(emailRegister);
+        userRegister.setUsername(usernameRegister);
+        userRegister.setPassword(passwordEncrypted);
+        userRegister.setCreateTime(Program.getDateTimeNow());
+
+        LoadingScreen.show(this);
+        Program.request.registerUser(userRegister).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                LoadingScreen.hide();
+                if (response.code() == 200) {
+                    if (response.body().equals("email")) {
+                        binding.editTextEmail.setError("Email này đã tồn tại!");
+                        binding.editTextEmail.requestFocus();
+                        //TODO:
+                        return;
+                    }
+                    if (response.body().equals("username")) {
+                        binding.editTextUsername.setError("Tên này đã được sử dụng!");
+                        binding.editTextUsername.requestFocus();
+                        return;
+                    }
+                    if (response.body().equals("OK")) {
+                        Toast.makeText(RegisterActivity.this, "Đăng kí thành công!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent();
+                        intent.putExtra("#email", userRegister.getEmail());
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                } else
+                    Toast.makeText(RegisterActivity.this, Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                LoadingScreen.hide();
+                Toast.makeText(RegisterActivity.this, Program.ERR_API_FAILURE, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getDataFromEditText() {
+        emailRegister = binding.editTextEmail.getText().toString().trim();
+        passwordRegister = binding.editTextPassword.getText().toString().trim();
+        usernameRegister = binding.editTextUsername.getText().toString().trim();
     }
 
     private boolean isValidInputData() {
-        email = binding.editTextEmail.getText().toString().trim();
-        password = binding.editTextPassword.getText().toString().trim();
-        userName = binding.editTextUserName.getText().toString().trim();
-        if (Validation.getEmailErr(email) != null) {
-            binding.editTextEmail.setError(Validation.getEmailErr(email));
+        if (Validation.getEmailErr(emailRegister) != null) {
+            binding.editTextEmail.setError(Validation.getEmailErr(emailRegister));
             binding.editTextEmail.requestFocus();
             return false;
         }
-        if (Validation.getUserNameErr(userName) != null) {
-            binding.editTextUserName.setError(Validation.getUserNameErr(userName));
-            binding.editTextUserName.requestFocus();
+        if (Validation.getUsernameErr(usernameRegister) != null) {
+            binding.editTextUsername.setError(Validation.getUsernameErr(usernameRegister));
+            binding.editTextUsername.requestFocus();
             return false;
         }
-        if (Validation.getPasswordErr(password, true) != null
+        if (Validation.getPasswordErr(passwordRegister, true) != null
                 || !isRePasswordMatch()) {
-            binding.editTextPassword.setError(Validation.getPasswordErr(password, true));
+            binding.editTextPassword.setError(Validation.getPasswordErr(passwordRegister, true));
             binding.editTextPassword.requestFocus();
             return false;
         }
@@ -153,6 +186,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setControl() {
+        //do nothing.
     }
 
 }

@@ -5,33 +5,25 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 
-import androidx.appcompat.app.AppCompatActivity;
+import java.util.Objects;
 
 import myour.myourforum.R;
 
-public class LoadingScreen extends AppCompatActivity {
-    private static AlertDialog mAlertDialog;
-
-    public static AlertDialog showLoadingDialog(Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setCancelable(false);
-        builder.setView(R.layout.dialog_loading_screen);
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-        if (alertDialog.getWindow() != null) {
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
-        return alertDialog;
-    }
+public class LoadingScreen {
+    private static AlertDialog dialogLoading;
 
     public static void show(Context context) {
         hide();
-        mAlertDialog = showLoadingDialog(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(R.layout.dialog_loading_screen);
+        builder.setCancelable(false);
+
+        dialogLoading = builder.create();
+        Objects.requireNonNull(dialogLoading.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogLoading.show();
     }
 
     public static void hide() {
-        if (mAlertDialog != null && mAlertDialog.isShowing()) {
-            mAlertDialog.dismiss();
-        }
+        if (dialogLoading != null && dialogLoading.isShowing()) dialogLoading.dismiss();
     }
 }

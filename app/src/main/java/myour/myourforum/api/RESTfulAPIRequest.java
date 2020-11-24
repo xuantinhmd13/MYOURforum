@@ -7,6 +7,7 @@ import myour.myourforum.model.Post;
 import myour.myourforum.model.User;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
@@ -27,8 +28,11 @@ public interface RESTfulAPIRequest {
     Call<String> uploadImage(@Part MultipartBody.Part image);
 
     @GET("/users/username/by-user-id")
-    Call<String> getUserNameByUserId(@Query("userId") int userId);
+    Call<String> getUsernameByUserId(@Query("userId") int userId);
 
     @POST("/users/register")
     Call<String> registerUser(@Body User user);
+
+    @POST("/users/login")
+    Call<User> login(@Query("email") String email);
 }

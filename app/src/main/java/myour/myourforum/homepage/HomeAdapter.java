@@ -72,7 +72,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             binding.textViewViewCount.setText(post.getViewCount() + " lượt xem");
 
             //set text tv username.
-            Program.request.getUserNameByUserId(post.getUserId()).enqueue(new Callback<String>() {
+            Program.request.getUsernameByUserId(post.getUserId()).enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
                     if (response.code() == 200) {
