@@ -12,10 +12,14 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface RESTfulAPIRequest {
+
+    @GET("/hello")
+    Call<String> testAPI();
 
     @GET("/categories")
     Call<List<Category>> getAllCategory();
@@ -27,12 +31,12 @@ public interface RESTfulAPIRequest {
     @Multipart
     Call<String> uploadImage(@Part MultipartBody.Part image);
 
-    @GET("/users/username/by-user-id")
-    Call<String> getUsernameByUserId(@Query("userId") int userId);
-
     @POST("/users/register")
     Call<String> registerUser(@Body User user);
 
     @POST("/users/login")
     Call<User> login(@Query("email") String email);
+
+    @PUT("/posts/{id}/view-count")
+    Call<Integer> increaseViewCount(@Query("id") int id);
 }

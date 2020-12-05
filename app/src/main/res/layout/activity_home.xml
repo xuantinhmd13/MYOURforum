@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frame_layout_fullscreen_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".homepage.HomeActivity">
+    tools:context=".home.HomeActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/tool_bar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/green_1"
-        android:theme="@style/Theme.MYOURforum"
-        app:popupTheme="@style/PopupStyle"></androidx.appcompat.widget.Toolbar>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/frame_layout_fullscreen_fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/tool_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/blue_1"
+            android:theme="@style/Theme.MYOURforum"
+            app:popupTheme="@style/PopupStyle" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,10 +55,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/gray_1"
                 android:orientation="horizontal"
-                android:paddingStart="4dp"
-                android:paddingTop="3dp"
-                android:paddingEnd="4dp"
-                android:paddingBottom="3dp">
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/text_view_category"
@@ -69,18 +66,19 @@
                     android:gravity="center"
                     android:text="Danh mục: "
                     android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <org.angmarch.views.NiceSpinner
                     android:id="@+id/spinner_category"
                     android:layout_width="0dp"
-                    android:layout_height="45dp"
+                    android:layout_height="40dp"
                     android:layout_marginEnd="10dp"
                     android:layout_weight="3"
                     android:textAlignment="center"
-                    android:textSize="15sp"
-                    app:popupTextAlignment="center"></org.angmarch.views.NiceSpinner>
+                    android:gravity="center"
+                    android:textSize="13sp"
+                    app:popupTextAlignment="center" />
 
             </LinearLayout>
 
@@ -102,7 +100,7 @@
                     android:id="@+id/recycler_view_home_page"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></com.jcodecraeer.xrecyclerview.XRecyclerView>
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 <com.getbase.floatingactionbutton.FloatingActionsMenu
                     android:id="@+id/fab_menu"
@@ -110,9 +108,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
-                    android:layout_margin="13dp"
-                    app:fab_addButtonColorNormal="@color/green_1"
-                    app:fab_addButtonColorPressed="@color/green"
+                    android:layout_margin="5dp"
+                    app:fab_addButtonColorNormal="@color/blue_1"
+                    app:fab_addButtonColorPressed="@color/blue_2"
                     app:fab_addButtonPlusIconColor="@color/white"
                     app:fab_labelStyle="@style/fab_menu">
 
@@ -132,7 +130,7 @@
                         android:layout_height="wrap_content"
                         app:fab_colorNormal="@color/white"
                         app:fab_colorPressed="@color/gray_1"
-                        app:fab_icon="@drawable/ic_create"
+                        app:fab_icon="@drawable/icon_create"
                         app:fab_size="mini"
                         app:fab_title="Viết bài" />
 
@@ -147,7 +145,8 @@
                         app:fab_title="Về đầu trang" />
 
                 </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
             </RelativeLayout>
         </LinearLayout>
-    </FrameLayout>
-</LinearLayout>
+    </LinearLayout>
+</FrameLayout>

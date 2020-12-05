@@ -10,12 +10,11 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import myour.myourforum.homepage.HomeActivity;
+import myour.myourforum.home.HomeActivity;
 import myour.myourforum.model.Category;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.HTTP;
 
 public class SplashScreenActivity extends AppCompatActivity {
 

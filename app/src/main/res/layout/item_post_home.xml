@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:orientation="vertical"
-    tools:context=".homepage.HomeActivity">
+    tools:context=".home.HomeActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -82,7 +82,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="7"
-                    android:gravity="center_vertical"
+                    android:background="@drawable/text_view_title_post"
+                    android:gravity="center|left"
+                    android:paddingStart="10dp"
                     android:text="Đánh giá iPhone 12 sau nhiều ngày ra mắt: Chê nhiều hơn khen, bỏ củ sạc, cạnh sắc, máy lag, dởm, đắt, cùi bắp, ..."
                     android:textColor="@color/black"
                     android:textSize="15sp"
@@ -98,32 +100,29 @@
         android:layout_marginTop="5dp"
         android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp"
-            android:src="@drawable/icon_view_count" />
-
         <TextView
             android:id="@+id/text_view_view_count"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
+            android:drawableLeft="@drawable/icon_view_count"
+            android:drawablePadding="3dp"
             android:gravity="center"
             android:text="43"
+            android:textColor="@color/gray"
             android:textSize="12sp"
-            android:textStyle="italic"
-            android:textColor="@color/gray"/>
+            android:textStyle="italic" />
 
         <TextView
             android:id="@+id/text_view_category"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
+            android:drawableLeft="@drawable/icon_ball"
+            android:drawablePadding="3dp"
             android:gravity="center"
+            android:text="Điện thoại"
             android:textColor="@color/gray"
-            android:text=" - Điện thoại"
             android:textSize="12sp"
             android:textStyle="italic" />
     </LinearLayout>

@@ -1,16 +1,19 @@
-package myour.myourforum.homepage;
+package myour.myourforum.home;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.fragment.app.FragmentManager;
 
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 
@@ -37,17 +40,19 @@ public class HomeActivity extends AppCompatActivity {
     private ActivityHomeBinding binding;
     private HomeAdapter homeAdapter;
 
-    private List<String> categoryListName;
-    private List<Post> postList;
+    private FragmentManager fragmentManager;
     private Menu optionMenu;
 
-    private boolean isPressedBack = false;
+    private List<String> categoryListName;
+    private List<Post> postList;
+
+    private boolean isBackPressed = false;
     private boolean isLoaded = false;
     private int categoryId = 0;
     private int pageIndexMain = 0;
     private int size = 5;
     private String keyWord = "";
-    private String TAG = "#homepage";
+    private String TAG = "#HomePageActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,31 +68,61 @@ public class HomeActivity extends AppCompatActivity {
         binding.spinnerCategory.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
-                categoryId = position;
-                loadDataFromServer();
+                clickItemOfSpinner(position);
             }
         });
 
         binding.fabUpTop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                binding.recyclerViewHomePage.smoothScrollToPosition(1);
+                clickFabUpTop();
+                binding.fabMenu.collapse();
             }
         });
 
         binding.fabCreatePost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO:
+                clickFabCreatePost();
+                binding.fabMenu.collapse();
             }
         });
 
         binding.fabYourPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO:
+                //TODO: click fabYourPost.
+                binding.fabMenu.collapse();
             }
         });
+
+        if (homeAdapter != null)
+            homeAdapter.setOnItemClickListener(new HomeAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(int position) {
+                    clickItemOfPostList(position);
+                }
+            });
+    }
+
+    private void clickItemOfPostList(int position) {
+        PostViewFragment fragment = PostViewFragment.newInstance(postList.get(position - 1));
+        if (fragmentManager.findFragmentByTag("postViewFragment") == null)
+            fragmentManager.beginTransaction().add(binding.frameLayoutFullscreenContainer.getId(), fragment, "#postViewFragment").addToBackStack(null).commit();
+    }
+
+    private void clickFabCreatePost() {
+        if (fragmentManager.findFragmentByTag("postEditFragment") == null)
+            fragmentManager.beginTransaction().add(binding.frameLayoutFullscreenContainer.getId(), new PostEditFragment(), "#postEditFragment").addToBackStack(null).commit();
+    }
+
+    private void clickFabUpTop() {
+        binding.recyclerViewHomePage.smoothScrollToPosition(1);
+    }
+
+    private void clickItemOfSpinner(int position) {
+        categoryId = position;
+        loadDataFromServer();
     }
 
     private void setControl() {
@@ -96,15 +131,18 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolBar);
         getSupportActionBar().setIcon(R.drawable.ic_homepage);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        //init
+        //tool.
+        fragmentManager = getSupportFragmentManager();
+        //init.
         categoryListName = new ArrayList<>();
         postList = new ArrayList<>();
-
-        getCategoryListName();
-        loadDataFromServer();// get list data to set for content
+        //first load data.
+        setDataSpinnerCategory();
+        loadDataFromServer();// get list data to set for content.
     }
 
-    private void getCategoryListName() {
+    private void setDataSpinnerCategory() {
+        categoryListName.clear();
         categoryListName.add(0, "Tất cả");
         for (Category category : Program.categoryList) {
             categoryListName.add(category.getName());
@@ -122,11 +160,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void searchPost(String keyWord) {
-        //TODO:
+        //TODO: searchPost.
     }
 
     private void getPostByCategory() {
         pageIndexMain = 0;
+
         LoadingScreen.show(this);
         Program.request.getPostByCategory(categoryId, pageIndexMain, size).enqueue(new Callback<List<Post>>() {
             @Override
@@ -162,6 +201,7 @@ public class HomeActivity extends AppCompatActivity {
             binding.recyclerViewHomePage.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
             binding.recyclerViewHomePage.setPullRefreshEnabled(false);
             isLoaded = true;
+            setEvent();
         } else {
             homeAdapter.update(list);
             binding.recyclerViewHomePage.setLoadingMoreEnabled(true);
@@ -218,35 +258,58 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        isBackPressed = false;
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         if (optionMenu != null) {
             controlActivity(optionMenu);
         }
-        getCategoryListName();
         loadDataFromServer();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         //TODO: check destroy xrecyvlerview.
         if (binding.recyclerViewHomePage != null) {
             binding.recyclerViewHomePage.destroy();
         }
-        isPressedBack = false;
         Program.user = null;
+        super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
-        if (!isPressedBack) {
-            Toast.makeText(this, "Nhấn lần nữa để thoát!", Toast.LENGTH_SHORT).show();
-            isPressedBack = true;
+        //TODO: sửa tên đối tượng + trạng thái như isBackPress.
+        if (fragmentManager.getBackStackEntryCount() != 0) {
+            fragmentManager.popBackStack();
+            isBackPressed = false;
+            onResume();
         } else {
-            isPressedBack = false;
-            super.onBackPressed();
-            finishAffinity();
+            if (!isBackPressed) {
+                Toast.makeText(this, "Nhấn lần nữa để thoát!", Toast.LENGTH_SHORT).show();
+                isBackPressed = true;
+            } else {
+                super.onBackPressed();
+                finishAffinity();
+            }
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (binding.fabMenu.isExpanded()) {
+                Rect outRect = new Rect();
+                binding.fabMenu.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY()))
+                    binding.fabMenu.collapse();
+            }
+        }
+        return super.dispatchTouchEvent(event);
     }
 }

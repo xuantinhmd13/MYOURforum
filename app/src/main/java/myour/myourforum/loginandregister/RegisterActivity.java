@@ -1,7 +1,5 @@
 package myour.myourforum.loginandregister;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,7 +8,15 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.gun0912.tedpermission.PermissionListener;
+
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.io.IOException;
+import java.util.List;
 
 import myour.myourforum.Program;
 import myour.myourforum.databinding.ActivityRegisterBinding;
@@ -40,10 +46,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setEvent() {
-        binding.imageViewBack.setOnClickListener(new View.OnClickListener() {
+        binding.buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickImageViewBack();
+                clickButtonBack();
             }
         });
 
@@ -72,8 +78,8 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void clickImageViewBack() {
-        finish();
+    private void clickButtonBack() {
+        onBackPressed();
     }
 
     private void clickButtonRegister() {
@@ -131,9 +137,7 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                     if (response.body().equals("OK")) {
                         Toast.makeText(RegisterActivity.this, "Đăng kí thành công!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent();
-                        intent.putExtra("#email", userRegister.getEmail());
-                        setResult(RESULT_OK, intent);
+                        setResult(RESULT_OK, new Intent().putExtra("#email", userRegister.getEmail()));
                         finish();
                     }
                 } else
@@ -188,5 +192,4 @@ public class RegisterActivity extends AppCompatActivity {
     private void setControl() {
         //do nothing.
     }
-
 }

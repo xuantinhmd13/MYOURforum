@@ -1,4 +1,4 @@
-package myour.myourforum.homepage;
+package myour.myourforum.home;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -26,6 +26,12 @@ import retrofit2.Response;
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     private List<Post> postList;
     private Context context;
+
+    private OnItemClickListener onItemClickListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
 
     public HomeAdapter(List<Post> postList, Context context) {
         this.postList = postList;
@@ -56,13 +62,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ItemPostHomeBinding binding;
 
         public ViewHolder(@NonNull ItemPostHomeBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            binding.getRoot().getRootView().setOnClickListener(this);
         }
 
         public void bindData(Post post) {
@@ -70,24 +77,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             binding.textViewCreateTime.setText(post.getCreateTime());
             binding.textViewTitle.setText(post.getTitle());
             binding.textViewViewCount.setText(post.getViewCount() + " lượt xem");
+            binding.textViewUsername.setText(post.getAuthorUsername());
 
-            //set text tv username.
-            Program.request.getUsernameByUserId(post.getUserId()).enqueue(new Callback<String>() {
-                @Override
-                public void onResponse(Call<String> call, Response<String> response) {
-                    if (response.code() == 200) {
-                        binding.textViewUsername.setText(response.body());
-                    } else
-                        Toast.makeText(context, Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onFailure(Call<String> call, Throwable t) {
-                    //Do nothing.
-                }
-            });
-
-            //set text tv update time.
+            //set update time.
             if (post.getUpdateTime() != null)
                 binding.textViewUpdateTime.setVisibility(View.VISIBLE);
             else binding.textViewUpdateTime.setVisibility(View.GONE);
@@ -95,6 +87,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
             //set image for post.
             String imageName = "post" + post.getId() + "_image0.jpg";
+            loadImageToImageView(imageName);
+        }
+
+        private void loadImageToImageView(String imageName) {
             Picasso.get()
                     .load(RESTfulAPIConfig.URL + "/image/" + imageName)
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -103,5 +99,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                     .placeholder(R.drawable.ic_image_null)
                     .into(binding.imageViewPost);
         }
+
+        @Override
+        public void onClick(View v) {
+            onItemClickListener.onItemClick(getAdapterPosition());
+        }
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 }

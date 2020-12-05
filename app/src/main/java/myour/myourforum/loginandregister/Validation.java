@@ -21,7 +21,7 @@ public class Validation {
     }
 
     public static String getUsernameErr(String userName) {
-        //TODO:
+        //TODO: checkSpecialCharacter.
         if (userName.isEmpty()) return warnNoEmpty;
         return null;
     }

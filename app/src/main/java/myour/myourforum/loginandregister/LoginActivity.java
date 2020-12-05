@@ -62,17 +62,20 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        binding.imageViewBack.setOnClickListener(new View.OnClickListener() {
+        binding.buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                clickButtonBack();
             }
         });
     }
 
+    private void clickButtonBack() {
+        onBackPressed();
+    }
+
     private void clickTextViewRegister() {
-        Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-        startActivityForResult(intent, Program.REQUEST_CODE_LOGIN);
+        startActivityForResult(new Intent(this, RegisterActivity.class), Program.REQUEST_CODE_REGISTER);
     }
 
     private void clickButtonLogin(View v) {
@@ -129,6 +132,7 @@ public class LoginActivity extends AppCompatActivity {
             Program.user = new User();
             Program.user = userLogin;
             setUpRemeberAccount(true);
+            Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
             finish();
         } else {
             binding.editTextPassword.setError("Sai mật khẩu!");
@@ -184,7 +188,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Program.REQUEST_CODE_LOGIN && resultCode == RESULT_OK && data != null) {
+        if (requestCode == Program.REQUEST_CODE_REGISTER && resultCode == RESULT_OK && data != null) {
             binding.editTextEmail.setText(data.getStringExtra("#email"));
             binding.editTextPassword.setText("");
             binding.checkBoxRemember.setChecked(false);

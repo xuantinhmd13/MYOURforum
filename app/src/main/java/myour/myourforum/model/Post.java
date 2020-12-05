@@ -1,6 +1,8 @@
 package myour.myourforum.model;
 
-public class Post {
+import java.io.Serializable;
+
+public class Post implements Serializable {
     private int id;
     private String title;
     private String content;
@@ -12,6 +14,7 @@ public class Post {
     private String source;
     private int likeCount;
     private boolean edited;
+    private String authorUsername;
 
     public int getId() {
         return id;
@@ -99,6 +102,10 @@ public class Post {
 
     public void setEdited(boolean edited) {
         this.edited = edited;
+    }
+
+    public String getAuthorUsername() {
+        return authorUsername;
     }
 
     public Post(int id, String title, String content, String createTime, String updateTime, int userId, int viewCount, int categoryId, String source, int likeCount, boolean edited) {
