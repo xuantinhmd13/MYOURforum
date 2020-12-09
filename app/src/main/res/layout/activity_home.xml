@@ -5,6 +5,7 @@
     android:id="@+id/frame_layout_fullscreen_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/gray_2"
     tools:context=".home.HomeActivity">
 
     <LinearLayout
@@ -17,8 +18,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/blue_1"
-            android:theme="@style/Theme.MYOURforum"
-            app:popupTheme="@style/PopupStyle" />
+            android:theme="@style/Theme.MYOURforum">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/logo_myourforum" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="MYOUR forum"
+                android:textColor="@color/white"
+                android:textSize="23sp"
+                android:textStyle="bold" />
+
+        </androidx.appcompat.widget.Toolbar>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -75,8 +92,8 @@
                     android:layout_height="40dp"
                     android:layout_marginEnd="10dp"
                     android:layout_weight="3"
-                    android:textAlignment="center"
                     android:gravity="center"
+                    android:textAlignment="center"
                     android:textSize="13sp"
                     app:popupTextAlignment="center" />
 
@@ -113,16 +130,6 @@
                     app:fab_addButtonColorPressed="@color/blue_2"
                     app:fab_addButtonPlusIconColor="@color/white"
                     app:fab_labelStyle="@style/fab_menu">
-
-                    <com.getbase.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/fab_your_post"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:fab_colorNormal="@color/white"
-                        app:fab_colorPressed="@color/gray_1"
-                        app:fab_icon="@drawable/icon_your_post"
-                        app:fab_size="mini"
-                        app:fab_title="Bài của bạn" />
 
                     <com.getbase.floatingactionbutton.FloatingActionButton
                         android:id="@+id/fab_create_post"

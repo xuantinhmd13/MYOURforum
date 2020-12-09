@@ -16,6 +16,7 @@ import myour.myourforum.Program;
 import myour.myourforum.databinding.ActivityLoginBinding;
 import myour.myourforum.model.User;
 import myour.myourforum.util.LoadingScreen;
+import myour.myourforum.util.Validation;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,14 +40,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setEvent() {
-
-        binding.textViewForgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "forgot pass", Toast.LENGTH_SHORT).show();
-                //TODO:
-            }
-        });
 
         binding.textViewRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,14 +74,13 @@ public class LoginActivity extends AppCompatActivity {
     private void clickButtonLogin(View v) {
         getDataFromEditText();
         if (isValidInputData()) {
-            //TODO:
             LoadingScreen.show(this);
             Program.request.login(emailLogin).enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
                     LoadingScreen.hide();
                     if (response.code() == 200 && response.body() != null) {
-                        loginAsyncTask(response.body());
+                        checkPasswordMatch(response.body());
                     } else if (response.code() == 204) {
                         binding.editTextEmail.setError("Email này không khớp với bất kì tài khoản nào!");
                         binding.editTextEmail.requestFocus();
@@ -105,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void loginAsyncTask(User userLogin) {
+    private void checkPasswordMatch(User userLogin) {
         new AsyncTask<String, Void, Boolean>() {
             @Override
             protected void onPreExecute() {
@@ -129,9 +121,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void login(Boolean result, User userLogin) {
         if (result) {
-            Program.user = new User();
             Program.user = userLogin;
-            setUpRemeberAccount(true);
+            setUpRemeberLogin(true);
             Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
             finish();
         } else {
@@ -141,13 +132,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isValidInputData() {
-        if (Validation.getEmailErr(emailLogin) != null) {
-            binding.editTextEmail.setError(Validation.getEmailErr(emailLogin));
+        if (Validation.getErrEmail(emailLogin) != null) {
+            binding.editTextEmail.setError(Validation.getErrEmail(emailLogin));
             binding.editTextEmail.requestFocus();
             return false;
         }
-        if (Validation.getPasswordErr(passwordLogin, false) != null) {
-            binding.editTextPassword.setError(Validation.getPasswordErr(passwordLogin, false));
+        if (Validation.getErrPassword(passwordLogin, false) != null) {
+            binding.editTextPassword.setError(Validation.getErrPassword(passwordLogin, false));
             binding.editTextPassword.requestFocus();
             return false;
         }
@@ -160,26 +151,26 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setControl() {
-        setUpRemeberAccount(false);
+        setUpRemeberLogin(false);
     }
 
-    private void setUpRemeberAccount(boolean isLoginSuccess) {
-        SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+    private void setUpRemeberLogin(boolean isLoginSuccess) {
+        SharedPreferences sharedPreferences = getSharedPreferences("#login", MODE_PRIVATE);
         if (!isLoginSuccess) {
-            binding.editTextEmail.setText(sharedPreferences.getString("email", ""));
-            binding.editTextPassword.setText(sharedPreferences.getString("password", ""));
-            binding.checkBoxRemember.setChecked(sharedPreferences.getBoolean("remember", false));
+            binding.editTextEmail.setText(sharedPreferences.getString("#email", ""));
+            binding.editTextPassword.setText(sharedPreferences.getString("#password", ""));
+            binding.checkBoxRememberLogin.setChecked(sharedPreferences.getBoolean("#rememberLogin", false));
         } else {
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            if (binding.checkBoxRemember.isChecked()) {
-                editor.putString("email", emailLogin);
-                editor.putString("password", passwordLogin);
-                editor.putBoolean("remember", true);
+            if (binding.checkBoxRememberLogin.isChecked()) {
+                editor.putString("#email", emailLogin);
+                editor.putString("#password", passwordLogin);
+                editor.putBoolean("#rememberLogin", true);
                 editor.apply();
             } else {
-                editor.remove("email");
-                editor.remove("password");
-                editor.remove("remember");
+                editor.remove("#email");
+                editor.remove("#password");
+                editor.remove("#rememberLogin");
                 editor.apply();
             }
         }
@@ -191,7 +182,7 @@ public class LoginActivity extends AppCompatActivity {
         if (requestCode == Program.REQUEST_CODE_REGISTER && resultCode == RESULT_OK && data != null) {
             binding.editTextEmail.setText(data.getStringExtra("#email"));
             binding.editTextPassword.setText("");
-            binding.checkBoxRemember.setChecked(false);
+            binding.checkBoxRememberLogin.setChecked(false);
         }
     }
 }

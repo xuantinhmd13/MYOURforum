@@ -10,7 +10,7 @@
         <item name="android:dropDownVerticalOffset">4.0dip</item>
     </style>
 
-    <style name="PopupStyle" parent="ThemeOverlay.AppCompat.Light">
+    <style name="PopupMenu" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:colorBackground">#fff</item>
         <item name="android:textColor">#000</item>
     </style>

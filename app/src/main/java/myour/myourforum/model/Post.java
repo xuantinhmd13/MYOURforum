@@ -11,9 +11,8 @@ public class Post implements Serializable {
     private int userId;
     private int viewCount;
     private int categoryId;
-    private String source;
-    private int likeCount;
-    private boolean edited;
+    private boolean hasImage;
+    //None database. to get Data. NOT SET DATA.
     private String authorUsername;
 
     public int getId() {
@@ -80,35 +79,19 @@ public class Post implements Serializable {
         this.categoryId = categoryId;
     }
 
-    public String getSource() {
-        return source;
+    public boolean isHasImage() {
+        return hasImage;
     }
 
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public int getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
-    }
-
-    public boolean isEdited() {
-        return edited;
-    }
-
-    public void setEdited(boolean edited) {
-        this.edited = edited;
+    public void setHasImage(boolean hasImage) {
+        this.hasImage = hasImage;
     }
 
     public String getAuthorUsername() {
         return authorUsername;
     }
 
-    public Post(int id, String title, String content, String createTime, String updateTime, int userId, int viewCount, int categoryId, String source, int likeCount, boolean edited) {
+    public Post(int id, String title, String content, String createTime, String updateTime, int userId, int viewCount, int categoryId, boolean hasImage) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -117,11 +100,31 @@ public class Post implements Serializable {
         this.userId = userId;
         this.viewCount = viewCount;
         this.categoryId = categoryId;
-        this.source = source;
-        this.likeCount = likeCount;
-        this.edited = edited;
+        this.hasImage = hasImage;
     }
 
     public Post() {
+    }
+
+    public void setPostUpdate(Post postUpdate) {
+        this.id = postUpdate.getId();
+        this.title = postUpdate.getTitle();
+        this.content = postUpdate.getContent();
+        this.createTime = postUpdate.getCreateTime();
+        this.updateTime = postUpdate.getUpdateTime();
+        this.userId = postUpdate.getUserId();
+        this.categoryId = postUpdate.getCategoryId();
+    }
+
+    public void setPost(Post post) {
+        this.id = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.createTime = post.getCreateTime();
+        this.updateTime = post.getUpdateTime();
+        this.userId = post.getUserId();
+        this.viewCount = post.getViewCount();
+        this.categoryId = post.getCategoryId();
+        this.hasImage = post.isHasImage();
     }
 }

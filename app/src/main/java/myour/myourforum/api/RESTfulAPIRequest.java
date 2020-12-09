@@ -27,9 +27,9 @@ public interface RESTfulAPIRequest {
     @GET("/posts/by-category-id")
     Call<List<Post>> getPostByCategory(@Query("categoryId") int categoryId, @Query("pageIdx") int pageIdx, @Query("size") int size);
 
-    @POST("/image")
+    @POST("/image/post/{id}")
     @Multipart
-    Call<String> uploadImage(@Part MultipartBody.Part image);
+    Call<Void> uploadImagePost(@Part MultipartBody.Part image, @Query("id") int id);
 
     @POST("/users/register")
     Call<String> registerUser(@Body User user);
@@ -39,4 +39,20 @@ public interface RESTfulAPIRequest {
 
     @PUT("/posts/{id}/view-count")
     Call<Integer> increaseViewCount(@Query("id") int id);
+
+    //add new post.
+    @POST("/posts")
+    Call<Integer> addPost(@Body Post newPost);
+
+    @PUT("/posts/{id}")
+    Call<Void> updatePost(@Body Post postEdited);
+
+    @PUT("/users/{id}")
+    Call<User> updateUser(@Body User userEdited);
+
+    @GET("/users/{id}")
+    Call<User> getUserById(@Query("id") int id);
+
+    @PUT("/users/{id}/password")
+    Call<Void> updatePassword(@Query("id") int id, @Query("passwordNew") String passwordNew, @Query("updateTime") String updateTime);
 }

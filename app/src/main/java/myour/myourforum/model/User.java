@@ -6,24 +6,24 @@ public class User {
     private String password;
     private String phoneNumber;
     private String email;
-    private String description;
     private String createTime;
     private String updateTime;
     private boolean adminRole;
+    private String description;
 
     public User() {
     }
 
-    public User(int id, String username, String password, String phoneNumber, String email, String description, String createTime, String updateTime, boolean adminRole) {
+    public User(int id, String username, String password, String phoneNumber, String email, String createTime, String updateTime, boolean adminRole, String description) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.email = email;
-        this.description = description;
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.adminRole = adminRole;
+        this.description = description;
     }
 
     public int getId() {
@@ -66,14 +66,6 @@ public class User {
         this.email = email;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getCreateTime() {
         return createTime;
     }
@@ -96,5 +88,37 @@ public class User {
 
     public void setAdminRole(boolean adminRole) {
         this.adminRole = adminRole;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setUserUpdate(User userUpdate) {
+        this.id = userUpdate.getId();
+        this.username = userUpdate.getUsername();
+        this.password = userUpdate.getPassword();
+        this.phoneNumber = userUpdate.getPhoneNumber();
+        this.email = userUpdate.getEmail();
+        this.createTime = userUpdate.getCreateTime();
+        this.updateTime = userUpdate.getUpdateTime();
+        this.adminRole = userUpdate.isAdminRole();
+        this.description = userUpdate.getDescription();
+    }
+
+    public void setUser(User user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.phoneNumber = user.getPhoneNumber();
+        this.email = user.getEmail();
+        this.createTime = user.getCreateTime();
+        this.updateTime = user.getUpdateTime();
+        this.adminRole = user.isAdminRole();
+        this.description = user.getDescription();
     }
 }

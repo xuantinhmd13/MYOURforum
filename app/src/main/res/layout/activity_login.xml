@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/gray_2"
     android:orientation="vertical"
     android:padding="5dp"
     tools:context="myour.myourforum.loginandregister.LoginActivity">
@@ -12,8 +13,8 @@
         android:id="@+id/button_back"
         android:layout_width="@dimen/button_back_size"
         android:layout_height="@dimen/button_back_size"
-        android:gravity="center"
-        android:background="@drawable/icon_back" />
+        android:background="@drawable/icon_back"
+        android:gravity="center" />
 
     <ImageView
         android:layout_width="130dp"
@@ -45,9 +46,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_border_edittext"
+            android:drawableLeft="@drawable/icon_email"
+            android:drawablePadding="10dp"
             android:hint="E-mail"
             android:imeOptions="actionNext"
             android:inputType="textEmailAddress"
+            android:maxLength="100"
             android:padding="10dp"
             android:singleLine="true"
             android:textColor="@color/black"
@@ -70,6 +74,7 @@
                 android:hint="Mật khẩu"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
+                android:maxLength="500"
                 android:padding="10dp"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
@@ -83,27 +88,27 @@
             android:orientation="horizontal">
 
             <CheckBox
-                android:id="@+id/check_box_remember"
+                android:id="@+id/check_box_remember_login"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center|left"
-                android:text="Ghi nhớ tài khoản"
+                android:text="Ghi nhớ đăng nhập"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/text_view_forgot_password"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:gravity="right|center_vertical"
-                android:paddingRight="20dp"
-                android:text="Quên mật khẩu"
-                android:textColor="@color/blue_1"
-                android:textSize="16sp" />
+            <!--            <TextView-->
+            <!--                android:id="@+id/text_view_forgot_password"-->
+            <!--                android:layout_width="0dp"-->
+            <!--                android:layout_height="match_parent"-->
+            <!--                android:layout_gravity="center"-->
+            <!--                android:layout_weight="1"-->
+            <!--                android:clickable="true"-->
+            <!--                android:gravity="right|center_vertical"-->
+            <!--                android:paddingRight="20dp"-->
+            <!--                android:text="Quên mật khẩu"-->
+            <!--                android:textColor="@color/blue_1"-->
+            <!--                android:textSize="16sp" />-->
         </LinearLayout>
 
         <Button

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/gray_2"
     android:padding="5dp"
     tools:context=".loginandregister.RegisterActivity">
 
@@ -40,9 +41,12 @@
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_border_edittext"
             android:hint="E-mail"
+            android:maxLength="100"
             android:imeOptions="actionNext"
+            android:drawableLeft="@drawable/icon_email"
             android:inputType="textEmailAddress"
             android:padding="10dp"
+            android:drawablePadding="5dp"
             android:singleLine="true"
             android:textColor="@color/black"
             android:textSize="16sp" />
@@ -54,6 +58,9 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/rounded_border_edittext"
             android:hint="Tên người dùng"
+            android:maxLength="50"
+            android:drawableLeft="@drawable/icon_username"
+            android:drawablePadding="5dp"
             android:imeOptions="actionNext"
             android:padding="10dp"
             android:singleLine="true"
@@ -74,6 +81,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_border_edittext"
                 android:hint="Mật khẩu"
+                android:maxLength="500"
                 android:imeOptions="actionNext"
                 android:inputType="textPassword"
                 android:padding="10dp"
@@ -91,6 +99,7 @@
             android:hint="Nhập lại mật khẩu"
             android:imeOptions="actionDone"
             android:inputType="textPassword"
+            android:maxLength="500"
             android:padding="10dp"
             android:textColor="@color/black"
             android:textSize="16sp" />

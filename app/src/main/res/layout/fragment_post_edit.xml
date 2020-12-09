@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/gray_2"
     android:clickable="true"
     android:orientation="vertical"
     android:padding="5dp"
@@ -17,22 +17,21 @@
         android:gravity="left"
         android:orientation="horizontal"
         android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:weightSum="10">
+        android:paddingBottom="5dp">
 
         <Button
             android:id="@+id/button_back"
             android:layout_width="@dimen/button_back_size"
             android:layout_height="@dimen/button_back_size"
+            android:layout_gravity="center"
             android:background="@drawable/icon_back"
-            android:gravity="center"
-            android:layout_gravity="center"/>
+            android:gravity="center" />
 
         <LinearLayout
-            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
@@ -47,6 +46,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/text_view_create_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/icon_ball"
@@ -62,19 +62,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="end"
-            android:padding="1dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="1dp">
 
             <Button
+                android:id="@+id/button_preview"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="5dp"
                 android:drawableLeft="@drawable/icon_preview"
                 android:text="xem\ntrước"
-                android:textSize="9sp"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textSize="9sp" />
 
             <Button
+                android:id="@+id/button_post"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="5dp"
@@ -90,7 +92,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none">
+        android:scrollbars="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -135,7 +137,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_marginTop="5dp"
-                android:src="@drawable/ic_image_null" />
+                android:src="@drawable/icon_image_null" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

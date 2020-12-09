@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
 import myour.myourforum.Program;
 import myour.myourforum.R;
 import myour.myourforum.api.RESTfulAPIConfig;
@@ -24,11 +26,15 @@ import retrofit2.Response;
 public class PostViewFragment extends Fragment {
     private FragmentPostViewBinding binding;
 
+    private boolean isPreviewMode = false;
+
     private Post post;
 
-    public static PostViewFragment newInstance(Post post) {
+    public static PostViewFragment newInstance(Post post, File fileImagePreview, boolean isPreview) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("#post", post);
+        bundle.putSerializable("#fileImagePreview", fileImagePreview);
+        bundle.putBoolean("#isPreview", isPreview);
         PostViewFragment fragment = new PostViewFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -52,6 +58,26 @@ public class PostViewFragment extends Fragment {
                 clickButtonBack();
             }
         });
+
+        binding.buttonEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickButtonEdit();
+            }
+        });
+
+        binding.buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: button delete.
+            }
+        });
+    }
+
+    private void clickButtonEdit() {
+        getFragmentManager().popBackStack();
+        PostEditFragment fragment = PostEditFragment.newInstance(post);
+        getFragmentManager().beginTransaction().add(R.id.frame_layout_fullscreen_container, fragment).addToBackStack(null).commit();
     }
 
     private void clickButtonBack() {
@@ -61,12 +87,39 @@ public class PostViewFragment extends Fragment {
     private void setControl() {
         if (getArguments() != null) {
             post = (Post) getArguments().get("#post");
-            loadDataInput();
-            setViewCount();
-        } else getFragmentManager().popBackStack();
+            isPreviewMode = getArguments().getBoolean("#isPreview");
+            if (isPreviewMode)
+                setOutDataPreview();
+            else setOutData();
+        } else getFragmentManager().popBackStackImmediate();
     }
 
-    private void setViewCount() {
+    private void setOutData() {
+        if (Program.user.getId() == post.getUserId()) {
+            binding.buttonEdit.setVisibility(View.VISIBLE);
+            binding.buttonDelete.setVisibility(View.VISIBLE);
+        } else {
+            binding.buttonEdit.setVisibility(View.INVISIBLE);
+            binding.buttonDelete.setVisibility(View.INVISIBLE);
+        }
+        if (post.isHasImage())
+            setOutImagePost();
+        setOutViewCount();
+        binding.textViewUsername.setText(post.getAuthorUsername());
+        setOutOtherComponent();
+    }
+
+    private void setOutImagePostPreview(File fileImagePost) {
+        Picasso.get()
+                .load(fileImagePost)
+                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                .centerInside()
+                .fit()
+                .placeholder(R.drawable.icon_image_null)
+                .into(binding.imageViewPost);
+    }
+
+    private void setOutViewCount() {
         LoadingScreen.show(getContext());
         Program.request.increaseViewCount(post.getId()).enqueue(new Callback<Integer>() {
             @Override
@@ -74,7 +127,7 @@ public class PostViewFragment extends Fragment {
                 LoadingScreen.hide();
                 if (response.code() == 200) {
                     post.setViewCount(response.body());
-                    loadDataInput();
+                    binding.textViewViewCount.setText(post.getViewCount() + "");
                 } else
                     Toast.makeText(getContext(), Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
             }
@@ -87,26 +140,30 @@ public class PostViewFragment extends Fragment {
         });
     }
 
-    private void loadDataInput() {
-        //load image.
-        String imageName = "post" + post.getId() + "_image0.jpg";
-        loadImageToImageView(imageName);
+    private void setOutDataPreview() {
+        binding.buttonEdit.setVisibility(View.INVISIBLE);
+        binding.buttonDelete.setVisibility(View.INVISIBLE);
+        setOutImagePostPreview((File) getArguments().get("#fileImagePreview"));
+        binding.textViewUsername.setText(Program.user.getUsername());
+        binding.textViewViewCount.setText("0");
+        setOutOtherComponent();
+    }
 
-        binding.textViewUsername.setText(post.getAuthorUsername());
+    private void setOutOtherComponent() {
         binding.textViewTitle.setText("   " + post.getTitle());
         binding.textViewCategory.setText(Program.categoryList.get(post.getCategoryId() - 1).getName());
         binding.textViewCreateTime.setText(post.getCreateTime());
-        binding.textViewViewCount.setText(post.getViewCount() + "");
         binding.textViewContent.setText("   " + post.getContent());
     }
 
-    private void loadImageToImageView(String imageName) {
+    private void setOutImagePost() {
+        String imageName = "post" + post.getId() + "_image0.jpg";
         Picasso.get()
                 .load(RESTfulAPIConfig.URL + "/image/" + imageName)
                 .memoryPolicy(MemoryPolicy.NO_CACHE)
                 .centerInside()
                 .fit()
-                .placeholder(R.drawable.ic_image_null)
+                .placeholder(R.drawable.icon_image_null)
                 .into(binding.imageViewPost);
     }
 }

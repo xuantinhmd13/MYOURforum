@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,9 +18,6 @@ import myour.myourforum.R;
 import myour.myourforum.api.RESTfulAPIConfig;
 import myour.myourforum.databinding.ItemPostHomeBinding;
 import myour.myourforum.model.Post;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     private List<Post> postList;
@@ -86,18 +82,22 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
 
             //set image for post.
-            String imageName = "post" + post.getId() + "_image0.jpg";
-            loadImageToImageView(imageName);
+            if (post.isHasImage()) {
+                String imageName = "post" + post.getId() + "_image0.jpg";
+                loadImageToImageView(imageName);
+            } else loadImageToImageView(null);
         }
 
         private void loadImageToImageView(String imageName) {
-            Picasso.get()
-                    .load(RESTfulAPIConfig.URL + "/image/" + imageName)
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .centerInside()
-                    .fit()
-                    .placeholder(R.drawable.ic_image_null)
-                    .into(binding.imageViewPost);
+            if (imageName != null)
+                Picasso.get()
+                        .load(RESTfulAPIConfig.URL + "/image/" + imageName)
+                        .memoryPolicy(MemoryPolicy.NO_CACHE)
+                        .centerInside()
+                        .fit()
+                        .placeholder(R.drawable.icon_image_null)
+                        .into(binding.imageViewPost);
+            else binding.imageViewPost.setImageResource(R.drawable.icon_image_null);
         }
 
         @Override

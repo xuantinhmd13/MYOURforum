@@ -16,6 +16,7 @@ import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.fragment.app.FragmentManager;
 
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import org.angmarch.views.NiceSpinner;
 import org.angmarch.views.OnSpinnerItemSelectedListener;
@@ -25,7 +26,6 @@ import java.util.List;
 
 import myour.myourforum.Program;
 import myour.myourforum.R;
-import myour.myourforum.admin.AdminActivity;
 import myour.myourforum.databinding.ActivityHomeBinding;
 import myour.myourforum.loginandregister.LoginActivity;
 import myour.myourforum.model.Category;
@@ -50,9 +50,9 @@ public class HomeActivity extends AppCompatActivity {
     private boolean isLoaded = false;
     private int categoryId = 0;
     private int pageIndexMain = 0;
-    private int size = 5;
+    private int size = 20;
     private String keyWord = "";
-    private String TAG = "#HomePageActivity";
+    private String TAG = "#HomeActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,11 +88,15 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        binding.fabYourPost.setOnClickListener(new View.OnClickListener() {
+        binding.recyclerViewHomePage.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
-            public void onClick(View v) {
-                //TODO: click fabYourPost.
-                binding.fabMenu.collapse();
+            public void onRefresh() {
+                getDataFromServer();
+            }
+
+            @Override
+            public void onLoadMore() {
+                getMoreDataFromServer();
             }
         });
 
@@ -105,15 +109,21 @@ public class HomeActivity extends AppCompatActivity {
             });
     }
 
+    private void getMoreDataFromServer() {
+        //TODO: load more recycler view.
+
+        binding.recyclerViewHomePage.loadMoreComplete();
+    }
+
     private void clickItemOfPostList(int position) {
-        PostViewFragment fragment = PostViewFragment.newInstance(postList.get(position - 1));
-        if (fragmentManager.findFragmentByTag("postViewFragment") == null)
-            fragmentManager.beginTransaction().add(binding.frameLayoutFullscreenContainer.getId(), fragment, "#postViewFragment").addToBackStack(null).commit();
+        PostViewFragment fragment = PostViewFragment.newInstance(postList.get(position - 1), null, false);
+        if (fragmentManager.findFragmentByTag("#postView") == null)
+            fragmentManager.beginTransaction().add(R.id.frame_layout_fullscreen_container, fragment, "#postView").addToBackStack(null).commit();
     }
 
     private void clickFabCreatePost() {
-        if (fragmentManager.findFragmentByTag("postEditFragment") == null)
-            fragmentManager.beginTransaction().add(binding.frameLayoutFullscreenContainer.getId(), new PostEditFragment(), "#postEditFragment").addToBackStack(null).commit();
+        if (fragmentManager.findFragmentByTag("#postEdit") == null)
+            fragmentManager.beginTransaction().add(R.id.frame_layout_fullscreen_container, new PostEditFragment(), "#postEdit").addToBackStack(null).commit();
     }
 
     private void clickFabUpTop() {
@@ -122,26 +132,23 @@ public class HomeActivity extends AppCompatActivity {
 
     private void clickItemOfSpinner(int position) {
         categoryId = position;
-        loadDataFromServer();
+        getDataFromServer();
     }
 
     private void setControl() {
         //interface.
-        binding.toolBar.setTitle("  MYOUR forum");
         setSupportActionBar(binding.toolBar);
-        getSupportActionBar().setIcon(R.drawable.ic_homepage);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         //tool.
         fragmentManager = getSupportFragmentManager();
         //init.
         categoryListName = new ArrayList<>();
         postList = new ArrayList<>();
         //first load data.
-        setDataSpinnerCategory();
-        loadDataFromServer();// get list data to set for content.
+        setOutDataSpinnerCategory();
+        getDataFromServer();// get list data to set for content.
     }
 
-    private void setDataSpinnerCategory() {
+    private void setOutDataSpinnerCategory() {
         categoryListName.clear();
         categoryListName.add(0, "Tất cả");
         for (Category category : Program.categoryList) {
@@ -151,7 +158,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-    private void loadDataFromServer() {
+    public void getDataFromServer() {
         if (keyWord.equals("")) {
             getPostByCategory();
         } else {
@@ -198,43 +205,53 @@ public class HomeActivity extends AppCompatActivity {
         if (!isLoaded) {
             homeAdapter = new HomeAdapter(list, HomeActivity.this);
             binding.recyclerViewHomePage.setAdapter(homeAdapter);
-            binding.recyclerViewHomePage.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
-            binding.recyclerViewHomePage.setPullRefreshEnabled(false);
+            binding.recyclerViewHomePage.setLoadingMoreProgressStyle(ProgressStyle.BallPulseSync);
+            binding.recyclerViewHomePage.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
+            binding.recyclerViewHomePage.setPullRefreshEnabled(true);
+            binding.recyclerViewHomePage.setLoadingMoreEnabled(true);
             isLoaded = true;
             setEvent();
         } else {
             homeAdapter.update(list);
-            binding.recyclerViewHomePage.setLoadingMoreEnabled(true);
+            binding.recyclerViewHomePage.refreshComplete();
         }
     }
 
     @SuppressLint("RestrictedApi")
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.clear();
+    public boolean onCreateOptionsMenu(Menu menu) {
         if (menu instanceof MenuBuilder) {
             ((MenuBuilder) menu).setOptionalIconsVisible(true);
         }
-        getMenuInflater().inflate(R.menu.main_option_menu_home_page, menu);
+        getMenuInflater().inflate(R.menu.main_option_menu_home, menu);
         optionMenu = menu;
-        controlActivity(optionMenu);
-        return super.onPrepareOptionsMenu(menu);
+        controlActivityWhenLogin(optionMenu);
+        return super.onCreateOptionsMenu(menu);
     }
 
-    private void controlActivity(Menu optionMenu) {
+    private void controlActivityWhenLogin(Menu optionMenu) {
+        controlOptionMenu(optionMenu);
+        controlUserFeature();
+    }
+
+    private void controlUserFeature() {
+        if (Program.user != null) {
+            binding.fabCreatePost.setVisibility(View.VISIBLE);
+        } else {
+            binding.fabCreatePost.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void controlOptionMenu(Menu optionMenu) {
         if (Program.user != null) {
             //hide login.
             optionMenu.findItem(R.id.menu_home_login).setVisible(false);
             //open features.
             optionMenu.findItem(R.id.menu_home_profile).setVisible(true);
-            if (Program.user.isAdminRole())
-                optionMenu.findItem(R.id.menu_home_manager).setVisible(true);
-            else optionMenu.findItem(R.id.menu_home_manager).setVisible(false);
         } else {
             //show login.
             optionMenu.findItem(R.id.menu_home_login).setVisible(true);
             //hide features.
-            optionMenu.findItem(R.id.menu_home_manager).setVisible(false);
             optionMenu.findItem(R.id.menu_home_profile).setVisible(false);
         }
     }
@@ -245,10 +262,6 @@ public class HomeActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_home_login:
                 startActivity(new Intent(this, LoginActivity.class));
-                break;
-            case R.id.menu_home_manager:
-                if (Program.user.isAdminRole())
-                    startActivity(new Intent(this, AdminActivity.class));
                 break;
             case R.id.menu_home_profile:
                 startActivity(new Intent(this, ProfileActivity.class));
@@ -266,10 +279,10 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (optionMenu != null) {
-            controlActivity(optionMenu);
-        }
-        loadDataFromServer();
+        if (optionMenu != null)
+            controlActivityWhenLogin(optionMenu);
+        getDataFromServer();
+        //TODO: check onresume work, loop 2!
     }
 
     @Override
@@ -286,7 +299,7 @@ public class HomeActivity extends AppCompatActivity {
     public void onBackPressed() {
         //TODO: sửa tên đối tượng + trạng thái như isBackPress.
         if (fragmentManager.getBackStackEntryCount() != 0) {
-            fragmentManager.popBackStack();
+            fragmentManager.popBackStackImmediate();
             isBackPressed = false;
             onResume();
         } else {
