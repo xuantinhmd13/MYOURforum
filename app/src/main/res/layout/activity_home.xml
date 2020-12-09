@@ -42,30 +42,17 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <EditText
+                android:id="@+id/edit_text_search"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/edit_text_search"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:background="@drawable/rounded_border_edittext"
-                    android:hint="Tìm kiếm ..."
-                    android:padding="5dp"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:id="@+id/image_view_search"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginEnd="4dp"
-                    android:src="@drawable/ic_search_black_36dp" />
-
-            </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/rounded_border_edittext"
+                android:hint="Tìm kiếm ..."
+                android:drawableLeft="@drawable/icon_search"
+                android:drawablePadding="10dp"
+                android:padding="5dp"
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -108,7 +95,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="Không tìm thấy !"
+                    android:text="Không có bài đăng nào!"
                     android:textAlignment="center"
                     android:textSize="20sp"
                     android:visibility="gone" />

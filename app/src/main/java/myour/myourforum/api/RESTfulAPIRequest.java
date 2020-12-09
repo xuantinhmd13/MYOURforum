@@ -6,6 +6,7 @@ import myour.myourforum.model.Category;
 import myour.myourforum.model.Post;
 import myour.myourforum.model.User;
 import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.Body;
@@ -26,7 +27,7 @@ public interface RESTfulAPIRequest {
     Call<List<Category>> getAllCategory();
 
     @GET("/posts/by-category-id")
-    Call<List<Post>> getPostByCategory(@Query("categoryId") int categoryId, @Query("pageIdx") int pageIdx, @Query("size") int size);
+    Call<List<Post>> getPostByCategory(@Query("categoryId") int categoryId, @Query("pageIndexMain") int pageIndexMain, @Query("size") int size);
 
     @POST("/image/post/{id}")
     @Multipart
@@ -62,4 +63,8 @@ public interface RESTfulAPIRequest {
 
     @GET("/posts/{id}")
     Call<Post> getPostById(@Query("id") int id);
+
+    @GET("/posts/search")
+    Call<List<Post>> searchPost(@Query("keyWord") String keyWord, @Query("categoryId") int categoryId,
+                                @Query("pageIndexSearch") int pageIndexSearch, @Query("size") int size);
 }

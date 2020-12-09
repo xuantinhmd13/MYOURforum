@@ -114,6 +114,8 @@ public class Post implements Serializable {
         this.updateTime = postUpdate.getUpdateTime();
         this.userId = postUpdate.getUserId();
         this.categoryId = postUpdate.getCategoryId();
+        this.viewCount = postUpdate.getViewCount();
+        this.hasImage = postUpdate.isHasImage();
     }
 
     public void setPost(Post post) {

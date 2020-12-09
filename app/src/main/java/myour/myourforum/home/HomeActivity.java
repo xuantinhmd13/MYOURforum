@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +34,7 @@ import myour.myourforum.model.Category;
 import myour.myourforum.model.Post;
 import myour.myourforum.profile.ProfileActivity;
 import myour.myourforum.util.LoadingScreen;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,7 +53,8 @@ public class HomeActivity extends AppCompatActivity {
     private boolean isLoaded = false;
     private int categoryId = 0;
     private int pageIndexMain = 0;
-    private int size = 20;
+    private int pageIndexSearch = 0;
+    private int size = 6;
     private String keyWord = "";
     private String TAG = "#HomeActivity";
 
@@ -107,12 +111,34 @@ public class HomeActivity extends AppCompatActivity {
                     clickItemOfPostList(position);
                 }
             });
+
+        binding.editTextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //do nothing.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //do nothing.
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                keyWord = s.toString();
+                getDataFromServer();
+            }
+        });
     }
 
     private void getMoreDataFromServer() {
-        //TODO: load more recycler view.
-
-        binding.recyclerViewHomePage.loadMoreComplete();
+        if (keyWord.isEmpty()) {
+            pageIndexMain++;
+            getPostByCategory(true);
+        } else {
+            pageIndexSearch++;
+            searchPost(keyWord, true);
+        }
     }
 
     private void clickItemOfPostList(int position) {
@@ -159,27 +185,25 @@ public class HomeActivity extends AppCompatActivity {
 
 
     public void getDataFromServer() {
-        if (keyWord.equals("")) {
-            getPostByCategory();
+        if (keyWord.isEmpty()) {
+            pageIndexMain = 0;
+            getPostByCategory(false);
         } else {
-            searchPost(keyWord);
+            pageIndexSearch = 0;
+            searchPost(keyWord, false);
         }
     }
 
-    private void searchPost(String keyWord) {
-        //TODO: searchPost.
-    }
-
-    private void getPostByCategory() {
-        pageIndexMain = 0;
-
+    private void searchPost(String keyWord, boolean isLoadMore) {
         LoadingScreen.show(this);
-        Program.request.getPostByCategory(categoryId, pageIndexMain, size).enqueue(new Callback<List<Post>>() {
+        Program.request.searchPost(keyWord, categoryId, pageIndexSearch, size).enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 LoadingScreen.hide();
                 if (response.code() == 200 && response.body() != null) {
-                    postList = response.body();
+                    if (isLoadMore)
+                        postList.addAll(response.body());
+                    else postList = response.body();
                     setUpRecyclerView(postList);
                 } else
                     Toast.makeText(HomeActivity.this, Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
@@ -189,7 +213,29 @@ public class HomeActivity extends AppCompatActivity {
             public void onFailure(Call<List<Post>> call, Throwable t) {
                 LoadingScreen.hide();
                 Toast.makeText(HomeActivity.this, Program.ERR_API_FAILURE, Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "ERR_API " + t.toString());
+            }
+        });
+    }
+
+    private void getPostByCategory(boolean isLoadMore) {
+        LoadingScreen.show(this);
+        Program.request.getPostByCategory(categoryId, pageIndexMain, size).enqueue(new Callback<List<Post>>() {
+            @Override
+            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                LoadingScreen.hide();
+                if (response.code() == 200 && response.body() != null) {
+                    if (isLoadMore)
+                        postList.addAll(response.body());
+                    else postList = response.body();
+                    setUpRecyclerView(postList);
+                } else
+                    Toast.makeText(HomeActivity.this, Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<List<Post>> call, Throwable t) {
+                LoadingScreen.hide();
+                Toast.makeText(HomeActivity.this, Program.ERR_API_FAILURE, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -214,6 +260,7 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             homeAdapter.update(list);
             binding.recyclerViewHomePage.refreshComplete();
+            binding.recyclerViewHomePage.loadMoreComplete();
         }
     }
 
