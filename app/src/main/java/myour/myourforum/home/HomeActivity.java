@@ -282,22 +282,17 @@ public class HomeActivity extends AppCompatActivity {
         if (optionMenu != null)
             controlActivityWhenLogin(optionMenu);
         getDataFromServer();
-        //TODO: check onresume work, loop 2!
     }
 
     @Override
     protected void onDestroy() {
-        //TODO: check destroy xrecyvlerview.
-        if (binding.recyclerViewHomePage != null) {
-            binding.recyclerViewHomePage.destroy();
-        }
+        binding.recyclerViewHomePage.destroy();
         Program.user = null;
         super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
-        //TODO: sửa tên đối tượng + trạng thái như isBackPress.
         if (fragmentManager.getBackStackEntryCount() != 0) {
             fragmentManager.popBackStackImmediate();
             isBackPressed = false;

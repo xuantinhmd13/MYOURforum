@@ -1,17 +1,27 @@
 package myour.myourforum.home;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.fragment.app.Fragment;
 
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.Objects;
 
 import myour.myourforum.Program;
 import myour.myourforum.R;
@@ -69,7 +79,57 @@ public class PostViewFragment extends Fragment {
         binding.buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: button delete.
+                clickButtonDelete();
+            }
+        });
+    }
+
+    private void clickButtonDelete() {
+        showDialogDeletePost();
+    }
+
+    private void showDialogDeletePost() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Xóa bài đăng");
+        builder.setMessage("Bạn thực sự muốn xóa bài đăng này?");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                clickYesDialogDeletePost(dialogInterface);
+            }
+        });
+        builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void clickYesDialogDeletePost(DialogInterface dialogInterface) {
+        LoadingScreen.show(getContext());
+        Program.request.deletePost(post.getId()).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                LoadingScreen.hide();
+                if (response.code() == 200) {
+                    Toast.makeText(getContext(), "Đã xóa", Toast.LENGTH_SHORT).show();
+                    dialogInterface.dismiss();
+                    getFragmentManager().popBackStack();
+                } else {
+                    Toast.makeText(getContext(), Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
+                    dialogInterface.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                LoadingScreen.hide();
+                Toast.makeText(getContext(), Program.ERR_API_FAILURE, Toast.LENGTH_SHORT).show();
+                dialogInterface.dismiss();
             }
         });
     }

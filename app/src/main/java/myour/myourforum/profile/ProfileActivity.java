@@ -195,7 +195,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if (response.code() == 200 && response.body() != null) {
                     Program.user = response.body();
                     setUpAfterEditSuccess();
-                    Toast.makeText(ProfileActivity.this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "Cập nhật thông tin thành công!", Toast.LENGTH_SHORT).show();
                 } else if (response.code() == 204) {
                     binding.editTextEmail.setError("Email này đã tồn tại!");
                     binding.editTextEmail.requestFocus();

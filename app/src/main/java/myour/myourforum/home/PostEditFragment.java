@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -80,8 +81,6 @@ public class PostEditFragment extends Fragment {
         setControl();
         setEvent();
 
-        //TODO: restore feature.
-
         return binding.getRoot();
     }
 
@@ -128,15 +127,43 @@ public class PostEditFragment extends Fragment {
             }
         });
 
-        binding.buttonPost.setOnClickListener(new View.OnClickListener() {
+        binding.buttonComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickButtonPost();
+                clickButtonComplete();
+            }
+        });
+
+        binding.buttonSync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickButtonSync();
             }
         });
     }
 
-    private void clickButtonPost() {
+    private void clickButtonSync() {
+        LoadingScreen.show(getContext());
+        Program.request.getPostById(postEdit.getId()).enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                LoadingScreen.hide();
+                if (response.code() == 200 && response.body() != null) {
+                    postEdit = response.body();
+                    setOutDataPostEdit();
+                } else
+                    Toast.makeText(getContext(), Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+                LoadingScreen.hide();
+                Toast.makeText(getContext(), Program.ERR_API_FAILURE, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void clickButtonComplete() {
         getInData();
         if (isValidInputData()) {
             if (isEditMode) {
@@ -165,7 +192,7 @@ public class PostEditFragment extends Fragment {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 LoadingScreen.hide();
                 if (response.code() == 200) {
-                    Toast.makeText(getContext(), "Sửa bài thành công!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Cập nhật bài đăng thành công!", Toast.LENGTH_SHORT).show();
                     if (fileImagePostTemp != null) {
                         uploadImagePost(postEdited.getId());
                     } else {
@@ -318,6 +345,7 @@ public class PostEditFragment extends Fragment {
         binding.spinnerCategory.setSelectedIndex(postEdit.getCategoryId() - 1);
         binding.editTextTitle.setText(postEdit.getTitle());
         binding.editTextContent.setText(postEdit.getContent());
+        binding.buttonSync.setVisibility(View.VISIBLE);
     }
 
     private void setOutImageViewPostEdit() {

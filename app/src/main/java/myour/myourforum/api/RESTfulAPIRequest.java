@@ -9,6 +9,7 @@ import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -55,4 +56,10 @@ public interface RESTfulAPIRequest {
 
     @PUT("/users/{id}/password")
     Call<Void> updatePassword(@Query("id") int id, @Query("passwordNew") String passwordNew, @Query("updateTime") String updateTime);
+
+    @DELETE("/posts/{id}")
+    Call<Void> deletePost(@Query("id") int id);
+
+    @GET("/posts/{id}")
+    Call<Post> getPostById(@Query("id") int id);
 }

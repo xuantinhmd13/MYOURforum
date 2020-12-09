@@ -8,7 +8,7 @@
         app:showAsAction="always|withText" />
     <item
         android:id="@+id/menu_profile_edit"
-        android:icon="@drawable/icon_edit_profile"
+        android:icon="@drawable/icon_edit"
         android:title="Sửa"
         app:showAsAction="always|withText" />
     <item

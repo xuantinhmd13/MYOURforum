@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/image_view_back"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="@dimen/button_back_size"
+            android:layout_height="@dimen/button_back_size"
             android:scaleType="fitXY"
             android:src="@drawable/icon_back_profile" />
 

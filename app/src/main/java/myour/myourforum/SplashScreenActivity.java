@@ -5,20 +5,17 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import myour.myourforum.home.HomeActivity;
 import myour.myourforum.model.Category;
 import myour.myourforum.model.User;
-import myour.myourforum.util.LoadingScreen;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -82,7 +79,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
                     if (response.code() == 200 && response.body() != null) {
-                        loginAsyncTask(response.body(), sharedPreferences.getString("#password", ""));
+                        checkPasswordMatch(response.body(), sharedPreferences.getString("#password", ""));
                     }
                 }
 
@@ -99,7 +96,6 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private void login(Boolean result, User userLogin) {
         if (result) {
-            Program.user = new User();
             Program.user = userLogin;
             Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
         }
@@ -107,7 +103,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         finish();
     }
 
-    private void loginAsyncTask(User userLogin, String passwordLogin) {
+    private void checkPasswordMatch(User userLogin, String passwordLogin) {
         new AsyncTask<String, Void, Boolean>() {
             @Override
             protected void onPreExecute() {
