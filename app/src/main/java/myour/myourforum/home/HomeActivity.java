@@ -6,7 +6,6 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -34,29 +33,27 @@ import myour.myourforum.model.Category;
 import myour.myourforum.model.Post;
 import myour.myourforum.profile.ProfileActivity;
 import myour.myourforum.util.LoadingScreen;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity {
-    private ActivityHomeBinding binding;
-    private HomeAdapter homeAdapter;
+    private final String TAG = "#HomeActivity";
+    private final int size = 6;
 
+    private ActivityHomeBinding binding;
     private FragmentManager fragmentManager;
+    private HomeAdapter homeAdapter;
     private Menu optionMenu;
 
     private List<String> categoryListName;
     private List<Post> postList;
-
     private boolean isBackPressed = false;
-    private boolean isLoaded = false;
+    private boolean isDataLoaded = false;
     private int categoryId = 0;
     private int pageIndexMain = 0;
     private int pageIndexSearch = 0;
-    private int size = 6;
     private String keyWord = "";
-    private String TAG = "#HomeActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +69,7 @@ public class HomeActivity extends AppCompatActivity {
         binding.spinnerCategory.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
-                clickItemOfSpinner(position);
+                clickItemSpinner(position);
             }
         });
 
@@ -92,7 +89,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        binding.recyclerViewHomePage.setLoadingListener(new XRecyclerView.LoadingListener() {
+        binding.recyclerViewHome.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
                 getDataFromServer();
@@ -108,7 +105,7 @@ public class HomeActivity extends AppCompatActivity {
             homeAdapter.setOnItemClickListener(new HomeAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {
-                    clickItemOfPostList(position);
+                    clickItemPostList(position);
                 }
             });
 
@@ -141,7 +138,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private void clickItemOfPostList(int position) {
+    private void clickItemPostList(int position) {
         PostViewFragment fragment = PostViewFragment.newInstance(postList.get(position - 1), null, false);
         if (fragmentManager.findFragmentByTag("#postView") == null)
             fragmentManager.beginTransaction().add(R.id.frame_layout_fullscreen_container, fragment, "#postView").addToBackStack(null).commit();
@@ -153,10 +150,10 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void clickFabUpTop() {
-        binding.recyclerViewHomePage.smoothScrollToPosition(1);
+        binding.recyclerViewHome.smoothScrollToPosition(1);
     }
 
-    private void clickItemOfSpinner(int position) {
+    private void clickItemSpinner(int position) {
         categoryId = position;
         getDataFromServer();
     }
@@ -170,11 +167,11 @@ public class HomeActivity extends AppCompatActivity {
         categoryListName = new ArrayList<>();
         postList = new ArrayList<>();
         //first load data.
-        setOutDataSpinnerCategory();
+        setDataSpinnerCategory();
         getDataFromServer();// get list data to set for content.
     }
 
-    private void setOutDataSpinnerCategory() {
+    private void setDataSpinnerCategory() {
         categoryListName.clear();
         categoryListName.add(0, "Tất cả");
         for (Category category : Program.categoryList) {
@@ -204,7 +201,7 @@ public class HomeActivity extends AppCompatActivity {
                     if (isLoadMore)
                         postList.addAll(response.body());
                     else postList = response.body();
-                    setUpRecyclerView(postList);
+                    setUpRecyclerViewHome(postList);
                 } else
                     Toast.makeText(HomeActivity.this, Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
             }
@@ -227,7 +224,7 @@ public class HomeActivity extends AppCompatActivity {
                     if (isLoadMore)
                         postList.addAll(response.body());
                     else postList = response.body();
-                    setUpRecyclerView(postList);
+                    setUpRecyclerViewHome(postList);
                 } else
                     Toast.makeText(HomeActivity.this, Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
             }
@@ -240,27 +237,27 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    private void setUpRecyclerView(List<Post> list) {
-        if (list.size() == 0) {
+    private void setUpRecyclerViewHome(List<Post> postList1) {
+        if (postList1.size() == 0) {
             binding.textViewEmpty.setVisibility(View.VISIBLE);
-            binding.recyclerViewHomePage.setVisibility(View.GONE);
+            binding.recyclerViewHome.setVisibility(View.GONE);
         } else {
             binding.textViewEmpty.setVisibility(View.GONE);
-            binding.recyclerViewHomePage.setVisibility(View.VISIBLE);
+            binding.recyclerViewHome.setVisibility(View.VISIBLE);
         }
-        if (!isLoaded) {
-            homeAdapter = new HomeAdapter(list, HomeActivity.this);
-            binding.recyclerViewHomePage.setAdapter(homeAdapter);
-            binding.recyclerViewHomePage.setLoadingMoreProgressStyle(ProgressStyle.BallPulseSync);
-            binding.recyclerViewHomePage.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
-            binding.recyclerViewHomePage.setPullRefreshEnabled(true);
-            binding.recyclerViewHomePage.setLoadingMoreEnabled(true);
-            isLoaded = true;
+        if (!isDataLoaded) {
+            homeAdapter = new HomeAdapter(postList1, HomeActivity.this);
+            binding.recyclerViewHome.setAdapter(homeAdapter);
+            binding.recyclerViewHome.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
+            binding.recyclerViewHome.setRefreshProgressStyle(ProgressStyle.BallClipRotate);
+            binding.recyclerViewHome.setPullRefreshEnabled(true);
+            binding.recyclerViewHome.setLoadingMoreEnabled(true);
+            isDataLoaded = true;
             setEvent();
         } else {
-            homeAdapter.update(list);
-            binding.recyclerViewHomePage.refreshComplete();
-            binding.recyclerViewHomePage.loadMoreComplete();
+            homeAdapter.update(postList1);
+            binding.recyclerViewHome.refreshComplete();
+            binding.recyclerViewHome.loadMoreComplete();
         }
     }
 
@@ -270,7 +267,7 @@ public class HomeActivity extends AppCompatActivity {
         if (menu instanceof MenuBuilder) {
             ((MenuBuilder) menu).setOptionalIconsVisible(true);
         }
-        getMenuInflater().inflate(R.menu.main_option_menu_home, menu);
+        getMenuInflater().inflate(R.menu.option_menu_home, menu);
         optionMenu = menu;
         controlActivityWhenLogin(optionMenu);
         return super.onCreateOptionsMenu(menu);
@@ -333,7 +330,7 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        binding.recyclerViewHomePage.destroy();
+        binding.recyclerViewHome.destroy();
         Program.user = null;
         super.onDestroy();
     }

@@ -22,8 +22,8 @@ import retrofit2.Response;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
+    private final String TAG = "#SplashScreenActivity";
     private CountDownTimer timerLoadingApp;
-    private String TAG = "#SplashScreenActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

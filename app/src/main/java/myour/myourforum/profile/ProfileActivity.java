@@ -114,7 +114,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (menu instanceof MenuBuilder) {
             ((MenuBuilder) menu).setOptionalIconsVisible(true);
         }
-        getMenuInflater().inflate(R.menu.main_option_menu_profile, menu);
+        getMenuInflater().inflate(R.menu.option_menu_profile, menu);
         optionMenu = menu;
         controlOptionMenu(optionMenu);
         return super.onCreateOptionsMenu(optionMenu);
@@ -134,8 +134,8 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_profile_sync:
-                menuSync();
+            case R.id.menu_profile_reload:
+                menuReload();
                 break;
             case R.id.menu_profile_edit:
                 menuEdit();
@@ -150,7 +150,7 @@ public class ProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void menuSync() {
+    private void menuReload() {
         LoadingScreen.show(this);
         Program.request.getUserById(Program.user.getId()).enqueue(new Callback<User>() {
             @Override

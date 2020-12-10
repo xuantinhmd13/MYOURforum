@@ -93,7 +93,7 @@ public class DialogChangePasswordFragment extends DialogFragment {
 
     private void clickButtonOk() {
         getInData();
-        if (isValidDataInput()) {
+        if (isValidInputData()) {
             checkPasswordMatch();
         }
     }
@@ -181,7 +181,7 @@ public class DialogChangePasswordFragment extends DialogFragment {
     }
 
 
-    private boolean isValidDataInput() {
+    private boolean isValidInputData() {
         if (Validation.getErrPassword(passwordNow, false) != null) {
             binding.editTextPassword.setError(Validation.getErrPassword(passwordNow, false));
             binding.editTextPassword.requestFocus();

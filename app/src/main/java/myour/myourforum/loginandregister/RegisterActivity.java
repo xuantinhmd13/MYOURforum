@@ -23,14 +23,13 @@ import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    private final String TAG = "#RegisterActivity";
     private ActivityRegisterBinding binding;
-
     private String emailRegister;
     private String passwordRegister;
     private String usernameRegister;
     private String password;
     private String rePassword;
-    private String TAG = "#RegisterActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +80,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void clickButtonRegister() {
         getInData();
-        if (isValidDataInput()) {
+        if (isValidInputData()) {
             encryptPassword();
         }
     }
@@ -112,7 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
         User userRegister = getUserRegister(passwordEncrypted);
 
         LoadingScreen.show(this);
-        Program.request.registerUser(userRegister).enqueue(new Callback<String>() {
+        Program.request.register(userRegister).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 LoadingScreen.hide();
@@ -161,7 +160,7 @@ public class RegisterActivity extends AppCompatActivity {
         rePassword = binding.editTextRePassword.getText().toString().trim();
     }
 
-    private boolean isValidDataInput() {
+    private boolean isValidInputData() {
         if (Validation.getErrEmail(emailRegister) != null) {
             binding.editTextEmail.setError(Validation.getErrEmail(emailRegister));
             binding.editTextEmail.requestFocus();

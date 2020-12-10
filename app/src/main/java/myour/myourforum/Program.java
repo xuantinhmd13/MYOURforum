@@ -1,6 +1,7 @@
 package myour.myourforum;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -21,10 +22,6 @@ import myour.myourforum.model.Category;
 import myour.myourforum.model.User;
 
 public class Program {
-    public static User user;
-    public static List<Category> categoryList;
-    //
-    public static RESTfulAPIRequest request = RESTfulAPIConfig.getServer();
     //
     public static final int REQUEST_CODE_REGISTER = 2;
     public static final int REQUEST_CODE_PICK_IMAGE = 3;
@@ -33,11 +30,14 @@ public class Program {
     public static final String ERR_API_SERVER = "Lỗi máy chủ!";
     public static final String[] listStorgePermission = {Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    public static User user;
+    public static List<Category> categoryList;
+    //
+    public static RESTfulAPIRequest request = RESTfulAPIConfig.getServer();
 
     public static String getDateTimeNow() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String timeNow = dateFormat.format(Calendar.getInstance().getTime());
-        return timeNow;
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return dateFormat.format(Calendar.getInstance().getTime());
     }
 
     public static boolean isNetworkAvailable(Context context) {

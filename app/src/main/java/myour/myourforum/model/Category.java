@@ -6,6 +6,16 @@ public class Category {
     private String createTime;
     private String updateTime;
 
+    public Category(int id, String name, String createTime, String updateTime) {
+        this.id = id;
+        this.name = name;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+    }
+
+    public Category() {
+    }
+
     public int getId() {
         return id;
     }
@@ -36,15 +46,5 @@ public class Category {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public Category(int id, String name, String createTime, String updateTime) {
-        this.id = id;
-        this.name = name;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-    }
-
-    public Category() {
     }
 }

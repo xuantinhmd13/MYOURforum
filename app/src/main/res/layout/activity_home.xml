@@ -101,7 +101,7 @@
                     android:visibility="gone" />
 
                 <com.jcodecraeer.xrecyclerview.XRecyclerView
-                    android:id="@+id/recycler_view_home_page"
+                    android:id="@+id/recycler_view_home"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />

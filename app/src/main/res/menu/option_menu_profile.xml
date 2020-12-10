@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_profile_sync"
-        android:icon="@drawable/icon_sync"
+        android:id="@+id/menu_profile_reload"
+        android:icon="@drawable/icon_reload"
         android:title="Đồng bộ"
         app:showAsAction="always|withText" />
     <item

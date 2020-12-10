@@ -68,12 +68,12 @@
             android:padding="1dp">
 
             <Button
-                android:id="@+id/button_sync"
+                android:id="@+id/button_reload"
                 android:layout_width="@dimen/button_modify"
                 android:layout_height="@dimen/button_modify"
                 android:layout_gravity="center"
                 android:layout_marginEnd="15dp"
-                android:background="@drawable/icon_sync"
+                android:background="@drawable/icon_reload"
                 android:visibility="gone" />
 
             <Button

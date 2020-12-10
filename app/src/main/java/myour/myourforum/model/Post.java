@@ -15,6 +15,21 @@ public class Post implements Serializable {
     //None database. to get Data. NOT SET DATA.
     private String authorUsername;
 
+    public Post(int id, String title, String content, String createTime, String updateTime, int userId, int viewCount, int categoryId, boolean hasImage) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.userId = userId;
+        this.viewCount = viewCount;
+        this.categoryId = categoryId;
+        this.hasImage = hasImage;
+    }
+
+    public Post() {
+    }
+
     public int getId() {
         return id;
     }
@@ -89,21 +104,6 @@ public class Post implements Serializable {
 
     public String getAuthorUsername() {
         return authorUsername;
-    }
-
-    public Post(int id, String title, String content, String createTime, String updateTime, int userId, int viewCount, int categoryId, boolean hasImage) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-        this.userId = userId;
-        this.viewCount = viewCount;
-        this.categoryId = categoryId;
-        this.hasImage = hasImage;
-    }
-
-    public Post() {
     }
 
     public void setPostUpdate(Post postUpdate) {

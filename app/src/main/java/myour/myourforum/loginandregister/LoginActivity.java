@@ -23,11 +23,10 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private final String TAG = "#LoginActivity";
     private ActivityLoginBinding binding;
-
     private String emailLogin;
     private String passwordLogin;
-    private String TAG = "#LoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void clickButtonLogin(View v) {
-        getDataFromEditText();
+        getInData();
         if (isValidInputData()) {
             LoadingScreen.show(this);
             Program.request.login(emailLogin).enqueue(new Callback<User>() {
@@ -145,7 +144,7 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
-    private void getDataFromEditText() {
+    private void getInData() {
         emailLogin = binding.editTextEmail.getText().toString().trim();
         passwordLogin = binding.editTextPassword.getText().toString().trim();
     }

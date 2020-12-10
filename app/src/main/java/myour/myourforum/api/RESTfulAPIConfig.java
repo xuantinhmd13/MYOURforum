@@ -12,8 +12,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RESTfulAPIConfig {
     public static final String URL = "http://192.168.1.2:8083";
 
-    private static Retrofit retrofit = null;
-
     public static Retrofit getClient(String url) {
         Gson gson = new GsonBuilder().setLenient().create();
 
@@ -24,12 +22,11 @@ public class RESTfulAPIConfig {
                 .retryOnConnectionFailure(true)
                 .build();
 
-        retrofit = new Retrofit.Builder()
+        return new Retrofit.Builder()
                 .baseUrl(url)
                 .client(clientBuilder)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
-        return retrofit;
     }
 
     public static RESTfulAPIRequest getServer() {

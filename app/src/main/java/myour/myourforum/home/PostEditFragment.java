@@ -12,7 +12,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -48,15 +47,15 @@ import static android.app.Activity.RESULT_OK;
 
 public class PostEditFragment extends Fragment {
 
+    private final String TAG = "#PostEditFragment";
+
     private FragmentPostEditBinding binding;
-
     private List<String> categoryListName;
-
     private Post postEdit;
     private File fileImagePostTemp;
+
     private String content;
     private String title;
-    private String TAG = "#PostEditFragment";
     private int categoryId;
     private boolean isEditMode = false;
 
@@ -134,15 +133,15 @@ public class PostEditFragment extends Fragment {
             }
         });
 
-        binding.buttonSync.setOnClickListener(new View.OnClickListener() {
+        binding.buttonReload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickButtonSync();
+                clickButtonReload();
             }
         });
     }
 
-    private void clickButtonSync() {
+    private void clickButtonReload() {
         LoadingScreen.show(getContext());
         Program.request.getPostById(postEdit.getId()).enqueue(new Callback<Post>() {
             @Override
@@ -328,7 +327,7 @@ public class PostEditFragment extends Fragment {
         //init.
         categoryListName = new ArrayList<>();
         binding.textViewUsername.setText(Program.user.getUsername());
-        setOutDataSpinnerCategory();
+        setDataSpinnerCategory();
         //is Edit state.
         if (getArguments() != null) {
             isEditMode = true;
@@ -345,7 +344,7 @@ public class PostEditFragment extends Fragment {
         binding.spinnerCategory.setSelectedIndex(postEdit.getCategoryId() - 1);
         binding.editTextTitle.setText(postEdit.getTitle());
         binding.editTextContent.setText(postEdit.getContent());
-        binding.buttonSync.setVisibility(View.VISIBLE);
+        binding.buttonReload.setVisibility(View.VISIBLE);
     }
 
     private void setOutImageViewPostEdit() {
@@ -359,7 +358,7 @@ public class PostEditFragment extends Fragment {
                 .into(binding.imageViewPost);
     }
 
-    private void setOutDataSpinnerCategory() {
+    private void setDataSpinnerCategory() {
         categoryListName.clear();
         for (Category category : Program.categoryList) {
             categoryListName.add(category.getName());

@@ -20,14 +20,9 @@ import myour.myourforum.databinding.ItemPostHomeBinding;
 import myour.myourforum.model.Post;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
+    private final Context context;
     private List<Post> postList;
-    private Context context;
-
     private OnItemClickListener onItemClickListener;
-
-    public interface OnItemClickListener {
-        void onItemClick(int position);
-    }
 
     public HomeAdapter(List<Post> postList, Context context) {
         this.postList = postList;
@@ -57,10 +52,18 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         return postList.size();
     }
 
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private ItemPostHomeBinding binding;
+        private final ItemPostHomeBinding binding;
 
         public ViewHolder(@NonNull ItemPostHomeBinding binding) {
             super(binding.getRoot());
@@ -104,9 +107,5 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         public void onClick(View v) {
             onItemClickListener.onItemClick(getAdapterPosition());
         }
-    }
-
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
     }
 }
