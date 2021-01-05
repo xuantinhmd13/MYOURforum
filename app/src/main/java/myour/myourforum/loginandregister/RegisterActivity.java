@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.mindrot.jbcrypt.BCrypt;
 
 import myour.myourforum.Program;
+import myour.myourforum.api.RESTfulAPIService;
 import myour.myourforum.databinding.ActivityRegisterBinding;
 import myour.myourforum.model.User;
 import myour.myourforum.util.LoadingScreen;
@@ -109,9 +110,12 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void register(String passwordEncrypted) {
         User userRegister = getUserRegister(passwordEncrypted);
+        requestRegister(userRegister);
+    }
 
+    private void requestRegister(User userRegister) {
         LoadingScreen.show(this);
-        Program.request.register(userRegister).enqueue(new Callback<String>() {
+        RESTfulAPIService.request.register(userRegister).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 LoadingScreen.hide();

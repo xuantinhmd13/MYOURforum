@@ -27,6 +27,7 @@ import java.util.List;
 
 import myour.myourforum.Program;
 import myour.myourforum.R;
+import myour.myourforum.api.RESTfulAPIService;
 import myour.myourforum.databinding.ActivityHomeBinding;
 import myour.myourforum.loginandregister.LoginActivity;
 import myour.myourforum.model.Category;
@@ -192,8 +193,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void searchPost(String keyWord, boolean isLoadMore) {
+        requestSearchPost(keyWord,isLoadMore);
+    }
+
+    private void requestSearchPost(String keyWord, boolean isLoadMore) {
         LoadingScreen.show(this);
-        Program.request.searchPost(keyWord, categoryId, pageIndexSearch, size).enqueue(new Callback<List<Post>>() {
+        RESTfulAPIService.request.searchPost(keyWord, categoryId, pageIndexSearch, size).enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 LoadingScreen.hide();
@@ -215,8 +220,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void getPostByCategory(boolean isLoadMore) {
+        requestGetPostByCategory(isLoadMore);
+    }
+
+    private void requestGetPostByCategory(boolean isLoadMore) {
         LoadingScreen.show(this);
-        Program.request.getPostByCategory(categoryId, pageIndexMain, size).enqueue(new Callback<List<Post>>() {
+        RESTfulAPIService.request.getPostByCategory(categoryId, pageIndexMain, size).enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 LoadingScreen.hide();

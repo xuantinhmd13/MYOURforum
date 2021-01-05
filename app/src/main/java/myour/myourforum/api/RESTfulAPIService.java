@@ -1,12 +1,19 @@
 package myour.myourforum.api;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import myour.myourforum.model.Category;
 import myour.myourforum.model.Post;
 import myour.myourforum.model.User;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -14,10 +21,30 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface RESTfulAPIRequest {
+public interface RESTfulAPIService {
+    //CONFIG
+    String URL = "http://192.168.1.5:8083";
 
+    Gson gson = new GsonBuilder().setLenient().create();
+
+    OkHttpClient clientBuilder = new OkHttpClient.Builder()
+            .readTimeout(5000, TimeUnit.MILLISECONDS)
+            .writeTimeout(5000, TimeUnit.MILLISECONDS)
+            .connectTimeout(10000, TimeUnit.MILLISECONDS)
+            .retryOnConnectionFailure(true)
+            .build();
+
+    RESTfulAPIService request = new Retrofit.Builder()
+            .baseUrl(URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(clientBuilder)
+            .build()
+            .create(RESTfulAPIService.class);
+
+    //REQUEST METHOD
     @GET("/hello")
     Call<String> testAPI();
 
@@ -34,7 +61,7 @@ public interface RESTfulAPIRequest {
                                 @Query("pageIndexSearch") int pageIndexSearch, @Query("size") int size);
 
     @GET("/posts/{id}")
-    Call<Post> getPostById(@Query("id") int id);
+    Call<Post> getPostById(@Path("id") int id);
 
     @POST("/posts")
     Call<Integer> addPost(@Body Post newPost);

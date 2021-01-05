@@ -15,7 +15,7 @@ import java.util.List;
 
 import myour.myourforum.Program;
 import myour.myourforum.R;
-import myour.myourforum.api.RESTfulAPIConfig;
+import myour.myourforum.api.RESTfulAPIService;
 import myour.myourforum.databinding.ItemPostHomeBinding;
 import myour.myourforum.model.Post;
 
@@ -94,7 +94,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         private void loadImageToImageView(String imageName) {
             if (imageName != null)
                 Picasso.get()
-                        .load(RESTfulAPIConfig.URL + "/image/" + imageName)
+                        .load(RESTfulAPIService.URL + "/image/" + imageName)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
                         .centerInside()
                         .fit()

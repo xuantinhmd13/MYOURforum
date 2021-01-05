@@ -17,6 +17,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.util.Objects;
 
 import myour.myourforum.Program;
+import myour.myourforum.api.RESTfulAPIService;
 import myour.myourforum.databinding.FragmentDialogChangePasswordBinding;
 import myour.myourforum.home.HomeActivity;
 import myour.myourforum.util.LoadingScreen;
@@ -157,8 +158,12 @@ public class DialogChangePasswordFragment extends DialogFragment {
     }
 
     private void updateNewPassword(String passwordEncrypted) {
+        requestUpdatePassword(passwordEncrypted);
+    }
+
+    private void requestUpdatePassword(String passwordEncrypted) {
         LoadingScreen.show(getContext());
-        Program.request.updatePassword(Program.user.getId(), passwordEncrypted, Program.getDateTimeNow()).enqueue(new Callback<Void>() {
+        RESTfulAPIService.request.updatePassword(Program.user.getId(), passwordEncrypted, Program.getDateTimeNow()).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 LoadingScreen.hide();

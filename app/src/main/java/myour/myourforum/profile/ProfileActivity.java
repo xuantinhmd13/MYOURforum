@@ -16,6 +16,7 @@ import androidx.appcompat.view.menu.MenuBuilder;
 
 import myour.myourforum.Program;
 import myour.myourforum.R;
+import myour.myourforum.api.RESTfulAPIService;
 import myour.myourforum.databinding.ActivityProfileBinding;
 import myour.myourforum.home.HomeActivity;
 import myour.myourforum.model.User;
@@ -151,8 +152,12 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void menuReload() {
+        requestGetUserById();
+    }
+
+    private void requestGetUserById() {
         LoadingScreen.show(this);
-        Program.request.getUserById(Program.user.getId()).enqueue(new Callback<User>() {
+        RESTfulAPIService.request.getUserById(Program.user.getId()).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 LoadingScreen.hide();
@@ -187,8 +192,12 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void editUser(User userEdited) {
+        requestUpdateUser(userEdited);
+    }
+
+    private void requestUpdateUser(User userEdited) {
         LoadingScreen.show(this);
-        Program.request.updateUser(userEdited).enqueue(new Callback<User>() {
+        RESTfulAPIService.request.updateUser(userEdited).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 LoadingScreen.hide();

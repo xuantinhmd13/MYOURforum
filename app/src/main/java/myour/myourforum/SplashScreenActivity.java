@@ -13,6 +13,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.List;
 
+import myour.myourforum.api.RESTfulAPIService;
 import myour.myourforum.home.HomeActivity;
 import myour.myourforum.model.Category;
 import myour.myourforum.model.User;
@@ -53,12 +54,15 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void getDataFromServer() {
-        Program.request.getAllCategory().enqueue(new Callback<List<Category>>() {
+        requestGetAllCategory();
+    }
+
+    private void requestGetAllCategory() {
+        RESTfulAPIService.request.getAllCategory().enqueue(new Callback<List<Category>>() {
             @Override
             public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
                 if (response.code() == 200 && response.body() != null) {
                     Program.categoryList = response.body();
-                    //Program.categoryList = response.body();
                     autoLogin();
                 } else
                     Toast.makeText(SplashScreenActivity.this, Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
@@ -74,24 +78,29 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private void autoLogin() {
         SharedPreferences sharedPreferences = getSharedPreferences("#login", MODE_PRIVATE);
-        if (sharedPreferences.getBoolean("#rememberLogin", false)) {
-            Program.request.login(sharedPreferences.getString("#email", "")).enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-                    if (response.code() == 200 && response.body() != null) {
-                        checkPasswordMatch(response.body(), sharedPreferences.getString("#password", ""));
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<User> call, Throwable t) {
-                    //do nothing.
-                }
-            });
+        boolean isRememberLogin = sharedPreferences.getBoolean("#rememberLogin", false);
+        if (isRememberLogin) {
+            requestLogin(sharedPreferences);
         } else {
             startActivity(new Intent(SplashScreenActivity.this, HomeActivity.class));
             finish();
         }
+    }
+
+    private void requestLogin(SharedPreferences sharedPreferences) {
+        RESTfulAPIService.request.login(sharedPreferences.getString("#email", "")).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.code() == 200 && response.body() != null) {
+                    checkPasswordMatch(response.body(), sharedPreferences.getString("#password", ""));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                //do nothing.
+            }
+        });
     }
 
     private void login(Boolean result, User userLogin) {

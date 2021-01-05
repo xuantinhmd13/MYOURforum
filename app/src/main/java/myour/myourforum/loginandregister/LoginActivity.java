@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.mindrot.jbcrypt.BCrypt;
 
 import myour.myourforum.Program;
+import myour.myourforum.api.RESTfulAPIService;
 import myour.myourforum.databinding.ActivityLoginBinding;
 import myour.myourforum.model.User;
 import myour.myourforum.util.LoadingScreen;
@@ -73,27 +74,31 @@ public class LoginActivity extends AppCompatActivity {
     private void clickButtonLogin(View v) {
         getInData();
         if (isValidInputData()) {
-            LoadingScreen.show(this);
-            Program.request.login(emailLogin).enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-                    LoadingScreen.hide();
-                    if (response.code() == 200 && response.body() != null) {
-                        checkPasswordMatch(response.body());
-                    } else if (response.code() == 204) {
-                        binding.editTextEmail.setError("Email này không khớp với bất kì tài khoản nào!");
-                        binding.editTextEmail.requestFocus();
-                    } else
-                        Toast.makeText(LoginActivity.this, Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onFailure(Call<User> call, Throwable t) {
-                    LoadingScreen.hide();
-                    Toast.makeText(LoginActivity.this, Program.ERR_API_FAILURE, Toast.LENGTH_SHORT).show();
-                }
-            });
+            requestLogin();
         }
+    }
+
+    private void requestLogin() {
+        LoadingScreen.show(this);
+        RESTfulAPIService.request.login(emailLogin).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                LoadingScreen.hide();
+                if (response.code() == 200 && response.body() != null) {
+                    checkPasswordMatch(response.body());
+                } else if (response.code() == 204) {
+                    binding.editTextEmail.setError("Email này không khớp với bất kì tài khoản nào!");
+                    binding.editTextEmail.requestFocus();
+                } else
+                    Toast.makeText(LoginActivity.this, Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                LoadingScreen.hide();
+                Toast.makeText(LoginActivity.this, Program.ERR_API_FAILURE, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void checkPasswordMatch(User userLogin) {

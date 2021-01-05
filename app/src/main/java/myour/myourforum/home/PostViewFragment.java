@@ -17,7 +17,7 @@ import java.io.File;
 
 import myour.myourforum.Program;
 import myour.myourforum.R;
-import myour.myourforum.api.RESTfulAPIConfig;
+import myour.myourforum.api.RESTfulAPIService;
 import myour.myourforum.databinding.FragmentPostViewBinding;
 import myour.myourforum.model.Post;
 import myour.myourforum.util.LoadingScreen;
@@ -102,14 +102,19 @@ public class PostViewFragment extends Fragment {
     }
 
     private void clickYesDialogDeletePost(DialogInterface dialogInterface) {
+        requestDeletePost(dialogInterface);
+    }
+
+    private void requestDeletePost(DialogInterface dialogInterface) {
         LoadingScreen.show(getContext());
-        Program.request.deletePost(post.getId()).enqueue(new Callback<Void>() {
+        RESTfulAPIService.request.deletePost(post.getId()).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 LoadingScreen.hide();
                 if (response.code() == 200) {
                     Toast.makeText(getContext(), "Đã xóa", Toast.LENGTH_SHORT).show();
                     dialogInterface.dismiss();
+                    ((HomeActivity) getActivity()).onResume();
                     getFragmentManager().popBackStack();
                 } else {
                     Toast.makeText(getContext(), Program.ERR_API_SERVER, Toast.LENGTH_SHORT).show();
@@ -147,7 +152,7 @@ public class PostViewFragment extends Fragment {
     }
 
     private void setOutData() {
-        if (Program.user.getId() == post.getUserId()) {
+        if (Program.user != null && Program.user.getId() == post.getUserId()) {
             binding.buttonEdit.setVisibility(View.VISIBLE);
             binding.buttonDelete.setVisibility(View.VISIBLE);
         } else {
@@ -172,8 +177,12 @@ public class PostViewFragment extends Fragment {
     }
 
     private void setOutViewCount() {
+        requestIncreaseViewCount();
+    }
+
+    private void requestIncreaseViewCount() {
         LoadingScreen.show(getContext());
-        Program.request.increaseViewCount(post.getId()).enqueue(new Callback<Integer>() {
+        RESTfulAPIService.request.increaseViewCount(post.getId()).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 LoadingScreen.hide();
@@ -211,7 +220,7 @@ public class PostViewFragment extends Fragment {
     private void setOutImagePost() {
         String imageName = "post" + post.getId() + "_image0.jpg";
         Picasso.get()
-                .load(RESTfulAPIConfig.URL + "/image/" + imageName)
+                .load(RESTfulAPIService.URL + "/image/" + imageName)
                 .memoryPolicy(MemoryPolicy.NO_CACHE)
                 .centerInside()
                 .fit()

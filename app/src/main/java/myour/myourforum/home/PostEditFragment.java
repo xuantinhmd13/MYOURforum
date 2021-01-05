@@ -30,7 +30,7 @@ import java.util.List;
 
 import myour.myourforum.Program;
 import myour.myourforum.R;
-import myour.myourforum.api.RESTfulAPIConfig;
+import myour.myourforum.api.RESTfulAPIService;
 import myour.myourforum.databinding.FragmentPostEditBinding;
 import myour.myourforum.model.Category;
 import myour.myourforum.model.Post;
@@ -142,8 +142,12 @@ public class PostEditFragment extends Fragment {
     }
 
     private void clickButtonReload() {
+        requestGetPost();
+    }
+
+    private void requestGetPost() {
         LoadingScreen.show(getContext());
-        Program.request.getPostById(postEdit.getId()).enqueue(new Callback<Post>() {
+        RESTfulAPIService.request.getPostById(postEdit.getId()).enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {
                 LoadingScreen.hide();
@@ -185,8 +189,12 @@ public class PostEditFragment extends Fragment {
     }
 
     private void editPost(Post postEdited) {
+        requestUpdatePost(postEdited);
+    }
+
+    private void requestUpdatePost(Post postEdited) {
         LoadingScreen.show(getContext());
-        Program.request.updatePost(postEdited).enqueue(new Callback<Void>() {
+        RESTfulAPIService.request.updatePost(postEdited).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 LoadingScreen.hide();
@@ -211,8 +219,12 @@ public class PostEditFragment extends Fragment {
     }
 
     private void addPost(Post newPost) {
+        requestAddPost(newPost);
+    }
+
+    private void requestAddPost(Post newPost) {
         LoadingScreen.show(getContext());
-        Program.request.addPost(newPost).enqueue(new Callback<Integer>() {
+        RESTfulAPIService.request.addPost(newPost).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 LoadingScreen.hide();
@@ -245,8 +257,12 @@ public class PostEditFragment extends Fragment {
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), fileImagePostTemp);
         MultipartBody.Part image = MultipartBody.Part.createFormData("image", fileName, requestBody);
 
+        requestUpdateImagePost(image, postId);
+    }
+
+    private void requestUpdateImagePost(MultipartBody.Part image, int postId) {
         LoadingScreen.show(getContext());
-        Program.request.uploadImagePost(image, postId).enqueue(new Callback<Void>() {
+        RESTfulAPIService.request.uploadImagePost(image, postId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 LoadingScreen.hide();
@@ -350,7 +366,7 @@ public class PostEditFragment extends Fragment {
     private void setOutImageViewPostEdit() {
         String imageName = "post" + postEdit.getId() + "_image0.jpg";
         Picasso.get()
-                .load(RESTfulAPIConfig.URL + "/image/" + imageName)
+                .load(RESTfulAPIService.URL + "/image/" + imageName)
                 .memoryPolicy(MemoryPolicy.NO_CACHE)
                 .centerInside()
                 .fit()

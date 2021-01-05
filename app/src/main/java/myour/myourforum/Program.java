@@ -16,8 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import myour.myourforum.api.RESTfulAPIConfig;
-import myour.myourforum.api.RESTfulAPIRequest;
 import myour.myourforum.model.Category;
 import myour.myourforum.model.User;
 
@@ -32,8 +30,6 @@ public class Program {
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
     public static User user;
     public static List<Category> categoryList;
-    //
-    public static RESTfulAPIRequest request = RESTfulAPIConfig.getServer();
 
     public static String getDateTimeNow() {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
