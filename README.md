@@ -1,2 +1,2 @@
 # MYOURforum
-A simple forum app on Android platform.
+A simple Forum app on Android platform.
